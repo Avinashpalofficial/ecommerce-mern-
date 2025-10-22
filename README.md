@@ -100,10 +100,3 @@ npm start
 
 Pull requests are welcome. For major changes, please open an issue first.
 
-## License
-
-[MIT](https://choosealicense.com/licenses/mit/)
-
-## Author
-
-Your Name - [Your GitHub Profile](https://github.com/your-username)
