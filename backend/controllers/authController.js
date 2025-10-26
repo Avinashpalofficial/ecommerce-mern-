@@ -2,9 +2,10 @@ import bcrypt from "bcrypt";
 import catchAsyncError from "../middleware/asyncError.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import User from "../Models/userSchema.js";
-
+import sendEmail from "../utils/sendEmail.js";
 import hashPassword from "../utils/hashUtils.js";
 import sendToken from "../utils/sendToken.js";
+import getResetPasswordToken from "../utils/resetToken.js";
 import { success } from "zod";
 
 //  register the user
@@ -64,4 +65,66 @@ const logoutUser = catchAsyncError(async(req,res,next)=>{
         message:'logged out successfully'
        })
 })
-export { registerUser, loginUser, logoutUser };
+
+//forgot password
+
+const forgotPassword = catchAsyncError(async (req,res,next)=>{
+      const user=  await User.findOne({email:req.body.email}) 
+      if(!user){
+        return next(new ErrorHandler('User not found with this email',404))
+      }
+      const resetToken = getResetPasswordToken(user)
+      await user.save({validateBeforeSave:false})
+      const resetUrl= `${req.protocol}://${req.get('host')}/api/v1/auth/password/reset/${resetToken}`
+        const message = `
+            <!DOCTYPE html>
+            <html>
+            <head>
+                <style>
+                    .container { font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto; padding: 20px; }
+                    .button { background-color: #007bff; color: white; padding: 12px 24px; text-decoration: none; border-radius: 5px; display: inline-block; }
+                    .footer { margin-top: 20px; font-size: 12px; color: #666; }
+                </style>
+            </head>
+            <body>
+                <div class="container">
+                    <h2>Password Reset Request</h2>
+                    <p>Hello ${user.name},</p>
+                    <p>You requested to reset your password. Click the button below to proceed:</p>
+                    <p>
+                        <a href="${resetUrl}" class="button">Reset Your Password</a>
+                    </p>
+                    <p>Or copy and paste this link in your browser:</p>
+                    <p>${resetUrl}</p>
+                    <p>This password reset link is valid for <strong>30 minutes</strong> only.</p>
+                    <p>If you didn't request this reset, please ignore this email.</p>
+                    <div class="footer">
+                        <p>Thank you,<br>Your App Team</p>
+                    </div>
+                </div>
+            </body>
+            </html>
+        `;
+         try {
+        await sendEmail({
+            email: user.email,
+            subject: 'Ecommerce Password Recovery',
+            message
+        });
+
+        res.status(200).json({
+            success: true,
+            message: `Email sent to: ${user.email}`
+        });
+
+    } catch (error) {
+        user.resetPasswordToken = undefined;
+        user.resetPasswordExpires = undefined;
+
+        await user.save({ validateBeforeSave: false });
+
+        return next(new ErrorHandler(error.message, 500));
+    }
+})
+
+export { registerUser, loginUser, logoutUser,forgotPassword };
