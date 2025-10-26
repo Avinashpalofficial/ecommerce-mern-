@@ -22,7 +22,7 @@ const  registerUser =  async(req,res)=>{
             const hashed = await hashPassword(req.body.password)
              const createUser =   await User.create({
                  username :req.body.username,
-                 email:req.body.email,
+                 email:req.body.email,  
                  password:hashed,
                  firstName:req.body.firstName,
                  lastName:req.body.lastName,
@@ -57,7 +57,7 @@ const loginUser = async(req,res)=>{
                         message:"Wrong input credential or password"
                     })
                 }
-                const token =   await jwt.sign({email:user.email ,password:user.password},process.env.JWT_SECRET)
+                const token =    jwt.sign({email:user.email ,password:user.password},process.env.JWT_SECRET)
                     return res.status(200).json({
                         success:true,
                         message: "token=",token
