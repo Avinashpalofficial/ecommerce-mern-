@@ -23,10 +23,11 @@ const userschema = new mongoose.Schema({
         type:[String],  //Array of string for roles
         default:['user']
      },
+     resetPasswordToken:String,
+     resetPasswordExpires:Date
   
 },{ timestamps:true})
 
- 
-const User = mongoose.model('User',userschema)
 
+const User = mongoose.model('User',userschema)
 export default User
