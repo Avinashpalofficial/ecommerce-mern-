@@ -6,6 +6,8 @@ import User from "../Models/userSchema.js";
 import sendEmail from "../utils/sendEmail.js";
 import hashPassword from "../utils/hashUtils.js";
 import sendToken from "../utils/sendToken.js";
+import Admin from "../Models/Admin.js";
+import jwt from 'jsonwebtoken'
 import getResetPasswordToken from "../utils/resetToken.js";
 
 
@@ -55,6 +57,76 @@ const loginUser = catchAsyncError(async (req, res, next) => {
 
   sendToken(user, 200, res);
 });
+
+//login Admin
+ 
+const loginAdmin = async (req, res) => {
+  try {
+    const { email, password } = req.body;
+
+    if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
+      return res.status(500).json({
+        success: false,
+        message: "Admin credentials not configured"
+      });
+    }
+
+    // Step 1: Check credentials
+    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
+      
+      // Step 2: Check if admin exists in database
+      let admin = await Admin.findOne({ email });
+      
+      // Step 3: If not exists, create in database (FIRST TIME ONLY)
+      if (!admin) {
+        admin = new Admin({
+          name: "System Administrator",
+          email: email,
+          password: await bcrypt.hash(password, 12), // Hash the password
+          role: "superadmin"
+        });
+        await admin.save();
+        console.log("✅ First admin created in database");
+      }
+
+      // Step 4: Generate token from database admin
+      const token = jwt.sign(
+        { 
+          id: admin._id, // Now using real database ID
+          email: admin.email, 
+          role: admin.role 
+        },
+        process.env.JWT_SECRET,
+        { expiresIn: "24h" }
+      );
+
+      res.json({
+        success: true,
+        token,
+        admin: {
+          id: admin._id,
+          email: admin.email,
+          role: admin.role
+        },
+        message: "Admin login successful"
+      });
+
+    } else {
+      res.status(401).json({
+        success: false,
+        message: "Invalid admin credentials"
+      });
+    }
+
+  } catch (error) {
+    console.log(error);
+    res.status(500).json({
+      success: false,
+      message: "Server error during admin login"
+    });
+  }
+};
+               
 //logout user
 const logoutUser = catchAsyncError(async(req,res,next)=>{
        res.cookie('token',null,{
@@ -169,4 +241,4 @@ const resetpassword = catchAsyncError(async(req,res,next)=>{
     await user.save();
     sendToken(user,200,res)
 })
-export { registerUser, loginUser, logoutUser,forgotPassword ,resetpassword};
+export { registerUser, loginUser, logoutUser,forgotPassword ,resetpassword,loginAdmin};
