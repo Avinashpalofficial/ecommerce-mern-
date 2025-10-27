@@ -2,7 +2,7 @@
 
 import catchAsyncError from '../middleware/asyncError.js'
 import ErrorHandler  from '../utils/errorHandler.js'
-import cloudinary from '../config/cloudinary'
+import cloudinary from '../config/cloudinary.js'
 
 
 const newProduct = catchAsyncError(async(req,res,next)=>{
@@ -40,4 +40,5 @@ const newProduct = catchAsyncError(async(req,res,next)=>{
         product
       })
 })
+
 export default {newProduct}
