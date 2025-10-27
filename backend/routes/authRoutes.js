@@ -1,6 +1,6 @@
 import express from 'express'
 // import authUser from '../middleware/auth.js'
-import {registerUser,loginUser ,logoutUser,forgotPassword,resetpassword} from '../controllers/authController.js'
+import {registerUser,loginUser ,logoutUser,forgotPassword,resetpassword,loginAdmin} from '../controllers/authController.js'
 
 const router = express.Router()
 
@@ -9,5 +9,6 @@ router.post('/login',loginUser)
 router.get('/logout',logoutUser)
 router.post('/password/forgot',forgotPassword)
 router.put('/password/reset/:token',resetpassword)
+router.post('/admin/login',loginAdmin)
 
 export default router
