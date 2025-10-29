@@ -1,15 +1,12 @@
 import bcrypt from "bcrypt";
-import crypto from 'crypto'
+import crypto from "crypto";
 import catchAsyncError from "../middleware/asyncError.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import User from "../Models/userSchema.js";
 import sendEmail from "../utils/sendEmail.js";
 import hashPassword from "../utils/hashUtils.js";
 import sendToken from "../utils/sendToken.js";
-import Admin from "../Models/Admin.js";
-import jwt from 'jsonwebtoken'
 import getResetPasswordToken from "../utils/resetToken.js";
-
 
 //  register the user
 const registerUser = catchAsyncError(async (req, res, next) => {
@@ -43,13 +40,10 @@ const loginUser = catchAsyncError(async (req, res, next) => {
   if (!user) {
     return next(new ErrorHandler("Invalid email or password", 401));
   }
-  console.log("password=",password);
-  console.log("user.password=",user.password);
-  
-  
-  const isPasswordMatched = await bcrypt.compare(
-    password, user.password,
-  );
+  console.log("password=", password);
+  console.log("user.password=", user.password);
+
+  const isPasswordMatched = await bcrypt.compare(password, user.password);
 
   if (!isPasswordMatched) {
     return next(new ErrorHandler("Invalid Email or Password", 401));
@@ -57,100 +51,30 @@ const loginUser = catchAsyncError(async (req, res, next) => {
 
   sendToken(user, 200, res);
 });
-
-//login Admin
- 
-const loginAdmin = async (req, res) => {
-  try {
-    const { email, password } = req.body;
-
-    if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
-      return res.status(500).json({
-        success: false,
-        message: "Admin credentials not configured"
-      });
-    }
-
-    // Step 1: Check credentials
-    if (email === process.env.ADMIN_EMAIL && password === process.env.ADMIN_PASSWORD) {
-      
-      // Step 2: Check if admin exists in database
-      let admin = await Admin.findOne({ email });
-      
-      // Step 3: If not exists, create in database (FIRST TIME ONLY)
-      if (!admin) {
-        admin = new Admin({
-          name: "System Administrator",
-          email: email,
-          password: await bcrypt.hash(password, 12), // Hash the password
-          role: "superadmin"
-        });
-        await admin.save();
-        console.log("✅ First admin created in database");
-      }
-
-      // Step 4: Generate token from database admin
-      const token = jwt.sign(
-        { 
-          id: admin._id, // Now using real database ID
-          email: admin.email, 
-          role: admin.role 
-        },
-        process.env.JWT_SECRET,
-        { expiresIn: "24h" }
-      );
-
-      res.json({
-        success: true,
-        token,
-        admin: {
-          id: admin._id,
-          email: admin.email,
-          role: admin.role
-        },
-        message: "Admin login successful"
-      });
-
-    } else {
-      res.status(401).json({
-        success: false,
-        message: "Invalid admin credentials"
-      });
-    }
-
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({
-      success: false,
-      message: "Server error during admin login"
-    });
-  }
-};
-               
 //logout user
-const logoutUser = catchAsyncError(async(req,res,next)=>{
-       res.cookie('token',null,{
-        expires:new Date(Date.now()),
-        httpOnly:true
-       })
-       res.status(200).json({
-        success:true,
-        message:'logged out successfully'
-       })
-})
+const logoutUser = catchAsyncError(async (req, res, next) => {
+  res.cookie("token", null, {
+    expires: new Date(Date.now()),
+    httpOnly: true,
+  });
+  res.status(200).json({
+    success: true,
+    message: "logged out successfully",
+  });
+});
 
 //forgot password
 
-const forgotPassword = catchAsyncError(async (req,res,next)=>{
-      const user=  await User.findOne({email:req.body.email}) 
-      if(!user){
-        return next(new ErrorHandler('User not found with this email',404))
-      }
-      const resetToken = getResetPasswordToken(user)
+const forgotPassword = catchAsyncError(async (req, res, next) => {
+  const user = await User.findOne({ email: req.body.email });
+  if (!user) {
+    return next(new ErrorHandler("User not found with this email", 404));
+  }
+  const resetToken = getResetPasswordToken(user);
 
-      await user.save({validateBeforeSave:false})
-      const resetUrl= `${req.protocol}://${req.get('host')}/api/v1/auth/password/reset/${resetToken}`
-        const message = `
+  await user.save({ validateBeforeSave: false });
+  const resetUrl = `${req.protocol}://${req.get("host")}/api/v1/auth/password/reset/${resetToken}`;
+  const message = `
             <!DOCTYPE html>
             <html>
             <head>
@@ -179,66 +103,78 @@ const forgotPassword = catchAsyncError(async (req,res,next)=>{
             </body>
             </html>
         `;
-         try {
-        await sendEmail({
-            email: user.email,
-            subject: 'Ecommerce Password Recovery',
-            message
-        });
+  try {
+    await sendEmail({
+      email: user.email,
+      subject: "Ecommerce Password Recovery",
+      message,
+    });
 
-        res.status(200).json({
-            success: true,
-            message: `Email sent to: ${user.email}`
-        });
+    res.status(200).json({
+      success: true,
+      message: `Email sent to: ${user.email}`,
+    });
+  } catch (error) {
+    user.resetPasswordToken = undefined;
+    user.resetPasswordExpire = undefined;
 
-    } catch (error) {
-        user.resetPasswordToken = undefined;
-        user.resetPasswordExpire = undefined;
+    await user.save({ validateBeforeSave: false });
 
-        await user.save({ validateBeforeSave: false });
-
-        return next(new ErrorHandler(error.message, 500));
-    }
-})
+    return next(new ErrorHandler(error.message, 500));
+  }
+});
 
 // resetpassword
 
-const resetpassword = catchAsyncError(async(req,res,next)=>{
-          const {password,confirmPassword} = req.body
-          const {token}= req.params
-          console.log("ye vala toekn dena=",token);
-          
-          if(!password || !confirmPassword){
-            return next(new ErrorHandler('password and confirmPassword fields are required',400))
-          }
-          if(password !==confirmPassword){
-            return next(new ErrorHandler('password and confirmPasword does not match',400))
-          }
-          //hash urltoken
-          const hashed = await hashPassword(req.body.password);
-           const resetPasswordToken = crypto
-        .createHash('sha256')
-        .update(token)
-        .digest('hex');
-         console.log("resetPasswordToken=",resetPasswordToken);
-         
-    const user = await User.findOne({
-        resetPasswordToken :resetPasswordToken ,
-        resetPasswordExpire: { $gt: Date.now() }
-    });
-         console.log("user btao muje=",user);
-         
-    if (!user) {
-        return next(new ErrorHandler('Password reset token is invalid or has expired', 400));
-    }
-     
-    // Update user
-    user.password = hashed;
-    user.resetPasswordToken = undefined;
-    user.resetPasswordExpire = undefined;
-    user.passwordChangedAt = Date.now(); // Track password change time
+const resetpassword = catchAsyncError(async (req, res, next) => {
+  const { password, confirmPassword } = req.body;
+  const { token } = req.params;
+  console.log("ye vala toekn dena=", token);
 
-    await user.save();
-    sendToken(user,200,res)
-})
-export { registerUser, loginUser, logoutUser,forgotPassword ,resetpassword,loginAdmin};
+  if (!password || !confirmPassword) {
+    return next(
+      new ErrorHandler("password and confirmPassword fields are required", 400)
+    );
+  }
+  if (password !== confirmPassword) {
+    return next(
+      new ErrorHandler("password and confirmPasword does not match", 400)
+    );
+  }
+  //hash urltoken
+  const hashed = await hashPassword(req.body.password);
+  const resetPasswordToken = crypto
+    .createHash("sha256")
+    .update(token)
+    .digest("hex");
+  console.log("resetPasswordToken=", resetPasswordToken);
+
+  const user = await User.findOne({
+    resetPasswordToken: resetPasswordToken,
+    resetPasswordExpire: { $gt: Date.now() },
+  });
+  console.log("user btao muje=", user);
+
+  if (!user) {
+    return next(
+      new ErrorHandler("Password reset token is invalid or has expired", 400)
+    );
+  }
+
+  // Update user
+  user.password = hashed;
+  user.resetPasswordToken = undefined;
+  user.resetPasswordExpire = undefined;
+  user.passwordChangedAt = Date.now(); // Track password change time
+
+  await user.save();
+  sendToken(user, 200, res);
+});
+export {
+  registerUser,
+  loginUser,
+  logoutUser,
+  forgotPassword,
+  resetpassword,
+  
+};
