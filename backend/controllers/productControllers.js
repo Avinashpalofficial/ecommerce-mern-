@@ -4,7 +4,7 @@ import catchAsyncError from "../middleware/asyncError.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import cloudinary from "../config/cloudinary.js";
 
-const newProduct = catchAsyncError(async (req, res, next) => {
+export const createProduct = catchAsyncError(async (req, res, next) => {
     // Check if images are provided
   if (!req.files || req.files.length === 0) {
     return next(new ErrorHandler("At least one image upload", 400));
@@ -40,7 +40,7 @@ const newProduct = catchAsyncError(async (req, res, next) => {
   });
 });
 //Get all Products
-const getProducts = catchAsyncError(async (req, res, next) => {
+export const getProducts = catchAsyncError(async (req, res, next) => {
   const resPerPage = 8;
   const TotalProducts = await Product.countDocuments();
   const apiFeatures = new APIfeatures(Product.find(), req.query);
@@ -61,4 +61,4 @@ const getProducts = catchAsyncError(async (req, res, next) => {
   });
 });
 
-export default { newProduct, getProducts };
+
