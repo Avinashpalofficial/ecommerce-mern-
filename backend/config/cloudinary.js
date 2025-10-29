@@ -1,5 +1,6 @@
-import {v2 as cloudinary } from 'cloudinary'
-import {cloudinaryStorage} from 'multer-storage-cloudinary'
+import { v2 as cloudinary } from 'cloudinary';
+import pkg from 'multer-storage-cloudinary';
+const {CloudinaryStorage}  =pkg
 import multer from 'multer'
 
 cloudinary.config({
@@ -7,7 +8,7 @@ cloudinary.config({
     api_key:process.env.CLOUDINARY_API_KEY,
     api_secret: process.env.CLOUDINARY_API_SECRET
 })
-const storage = new cloudinaryStorage({
+const storage = new CloudinaryStorage({
     cloudinary:cloudinary,
     params:{
         folder:'ecommerce',
