@@ -1,7 +1,4 @@
 import mongoose from "mongoose";
-import { maxLength } from "zod";
-import { tr } from "zod/locales";
-import { required } from "zod/mini";
 
 const productSchema=  new mongoose.Schema({
     name :{
