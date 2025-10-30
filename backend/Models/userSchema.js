@@ -23,6 +23,12 @@ const userschema = new mongoose.Schema({
         type:[String],  //Array of string for roles
         default:['user']
      },
+     orders: [             // 👈 new field
+    {
+      type: mongoose.Schema.ObjectId,
+      ref: "Order"
+    }
+  ],
      resetPasswordToken:String,
      resetPasswordExpire:Date
   
