@@ -11,8 +11,8 @@ import adminLogin from "../controllers/adminController.js";
 
 const authRouter = express.Router();
 
-authRouter.post("/register", registerUser);
-authRouter.post("/login", loginUser);
+authRouter.post("/user/register", registerUser);
+authRouter.post("/user/login", loginUser);
 authRouter.get("/logout", logoutUser);
 authRouter.post("/password/forgot", forgotPassword);
 authRouter.put("/password/reset/:token", resetpassword);
