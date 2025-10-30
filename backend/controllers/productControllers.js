@@ -64,3 +64,34 @@ export const getSingleProduct = catchAsyncError(async (req, res, next) => {
     product,
   });
 });
+//Update Product /api/v1/admin/products/:id
+export const updateProduct = catchAsyncError(async (req, res, next) => {
+  let product = await Product.findById(req.params.id);
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 401));
+  }
+  //if new images came via multer
+  if (req.files && req.files.length > 0) {
+    //first delete the old images
+    for (let i = 0; i < product.images.length; i++) {
+      await cloudinary.uploader.destroy(product.images[i].public_id);
+    }
+
+    // Use multer approach for new images
+    const imageLinks = req.files.map((file) => ({
+      public_id: file.filename,
+      url: file.path,
+    }));
+    req.body.images = imageLinks;
+  }
+  product = await Product.findByIdAndUpdate(req.params.id, req.body, {
+    new: true,
+    runValidators: true,
+    useFindAndModify: false,
+  });
+
+  res.status(200).json({
+    success: true,
+    product,
+  });
+});
