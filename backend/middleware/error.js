@@ -1,5 +1,8 @@
 import ErrorHandler from "../utils/errorHandler.js";
 const errorMiddleware = (err, req, res, next) => {
+  if (typeof err === "string") {
+    err = new Error(err);
+  }
   err.statusCode = err.statusCode || 500;
   err.message = err.message || "Internal server error";
   //wrong mongoose object Id
