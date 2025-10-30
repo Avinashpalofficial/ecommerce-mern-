@@ -3,35 +3,27 @@ import APIfeatures from "../utils/apiFeatures.js";
 import catchAsyncError from "../middleware/asyncError.js";
 import ErrorHandler from "../utils/errorHandler.js";
 import cloudinary from "../config/cloudinary.js";
+import { upload } from "../config/cloudinary.js";
 
 export const createProduct = catchAsyncError(async (req, res, next) => {
-    // Check if images are provided
+  // Check if images are provided
   if (!req.files || req.files.length === 0) {
     return next(new ErrorHandler("At least one image upload", 400));
   }
-  let imageLinks = [];
+
   //upload images in cloudinary
-  for (let i = 0; i < req.files.length; i++) {
-    //convert buffer to base64
-    const b64 = Buffer.from(req.files[i].buffer).toString("base64");
-    const dataURL = "data;" + req.files[i].mimetype + ";base64" + b64;
-    //upload to  cloudinary
-    const result = await cloudinary.uploader.upload(dataURL, {
-      folder: ecommerce / products,
-    });
-    imageLinks.push({
-      public_id: result.public_id,
-      url: result.url,
-    });
-  }
+  const imageLinks = req.files.map((file) => ({
+    public_id: file.filename,
+    url: file.path,
+  }));
   const productData = {
     name: req.body.name,
     price: req.body.price,
     description: req.body.description,
     category: req.body.category,
-    stocks: req.body.stocks || 0,
+    stock: req.body.stock || 0,
     images: imageLinks,
-    user: req.user.id,
+    Seller: req.admin.id,
   };
   const product = await Product.create(productData);
   res.status(200).json({
@@ -61,4 +53,14 @@ export const getProducts = catchAsyncError(async (req, res, next) => {
   });
 });
 
-
+//get Single Product  /api/v1/products/:id
+export const getSingleProduct = catchAsyncError(async (req, res, next) => {
+  const product = await Product.findById(req.params.id);
+  if (!product) {
+    return next(new ErrorHandler("Product not found", 401));
+  }
+  res.status(200).json({
+    success: true,
+    product,
+  });
+});
