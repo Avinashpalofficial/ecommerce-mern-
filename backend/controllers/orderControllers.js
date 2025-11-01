@@ -2,7 +2,7 @@ import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncError from "../middleware/asyncError.js";
 import Order from "../Models/Order.js";
 import User from "../Models/userSchema.js";
-import { success } from "zod";
+
 import Product from "../Models/product.js";
 
 export const newOrder = catchAsyncError(async (req, res, next) => {
@@ -91,12 +91,10 @@ export const UpdateOrder = catchAsyncError(async (req, res, next) => {
           .json({ success: false, message: "Product not found" });
       }
       if (product.stock < quantity) {
-        return res
-          .status(400)
-          .json({
-            success: false,
-            message: `Insufficient stock for Product ${id}`,
-          });
+        return res.status(400).json({
+          success: false,
+          message: `Insufficient stock for Product ${id}`,
+        });
       }
       product.stock = product.stock - quantity;
       await product.save();
@@ -107,13 +105,14 @@ export const UpdateOrder = catchAsyncError(async (req, res, next) => {
 });
 
 //delete order /api/v1/admin/orders/:id
-export const deleteOrder =  catchAsyncError(async(req,res,next)=>{
-             const order = await Order.findById(req.params.id)
-             if(!order){
-               return next(new ErrorHandler(`Order not found for this ID ${id}`))
-             }
-             await order.deleteOne()
-             res.status(200).json({success:true,message:"Order deleted successfully"})
-})
-
+export const deleteOrder = catchAsyncError(async (req, res, next) => {
+  const order = await Order.findById(req.params.id);
+  if (!order) {
+    return next(new ErrorHandler(`Order not found for this ID ${id}`));
+  }
+  await order.deleteOne();
+  res
+    .status(200)
+    .json({ success: true, message: "Order deleted successfully" });
+});
 
