@@ -37,3 +37,12 @@ export const getSingleOrder=  catchAsyncError(async(req,res,next)=>{
                      }
                      res.status(200).json({success:true,order})
 })
+
+//Get logged in Users orders /api/v1/orders/me
+ export const myOrders =  catchAsyncError(async(req,res,next)=>{
+       const orders= await Order.findById({user:req.user.id})
+       if(!orders){
+              return next(new ErrorHandler('Orders not found'))
+       }
+       res.status(200).json({success:true,orders})
+ })
