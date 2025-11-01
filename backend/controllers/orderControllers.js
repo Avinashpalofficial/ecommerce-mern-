@@ -81,7 +81,7 @@ export const UpdateOrder = catchAsyncError(async (req, res, next) => {
   order.deliveredAt = Date.now();
   await order.save();
   res.status(200).json({ success: true, order });
-
+  //update stock for each items
   const updateStock = async (id, quantity) => {
     try {
       const product = await Product.findById(id);
@@ -105,3 +105,15 @@ export const UpdateOrder = catchAsyncError(async (req, res, next) => {
     }
   };
 });
+
+//delete order /api/v1/admin/orders/:id
+export const deleteOrder =  catchAsyncError(async(req,res,next)=>{
+             const order = await Order.findById(req.params.id)
+             if(!order){
+               return next(new ErrorHandler(`Order not found for this ID ${id}`))
+             }
+             await order.deleteOne()
+             res.status(200).json({success:true,message:"Order deleted successfully"})
+})
+
+
