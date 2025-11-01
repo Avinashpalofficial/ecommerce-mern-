@@ -21,3 +21,28 @@ export const processPayment = catchAsyncError(async (req, res, next) => {
     .status(200)
     .json({ success: true, client_secret: paymentIntent.client_secret });
 });
+export const stripeWebhook = catchAsyncError(async (req, res, next) => {
+  const sig = req.headers["stripe-signature"];
+  let event;
+
+  try {
+    event = stripe.webhooks.constructEvent(
+      req.body,
+      sig,
+      process.env.STRIPE_WEBHOOK_SECRET
+    );
+  } catch (err) {
+    return res.status(400).send(`Webhook Error: ${err.message}`);
+  }
+
+  // Handle the checkout.session.completed event
+  if (event.type === "checkout.session.completed") {
+    const session = event.data.object;
+
+    // Here you would typically create the order in your database
+    // You can use the session metadata to get order details
+    console.log("Payment successful for session:", session.id);
+  }
+
+  res.status(200).json({ received: true });
+});
