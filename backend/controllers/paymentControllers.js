@@ -3,6 +3,7 @@ dotenv.config();
 import Stripe from "stripe";
 import ErrorHandler from "../utils/errorHandler.js";
 import catchAsyncError from "../middleware/asyncError.js";
+import { success } from "zod";
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
@@ -21,6 +22,13 @@ export const processPayment = catchAsyncError(async (req, res, next) => {
     .status(200)
     .json({ success: true, client_secret: paymentIntent.client_secret });
 });
+//Send Stripe API Key   to frontend
+export const sendStripeApiKey = catchAsyncError(async (req, res, next) => {
+  res
+    .status(200)
+    .json({ success: true, stripeApiKey: process.env.STRIPE_PUBLISHABLE_KEY });
+});
+//Handle Stripe Webhook
 export const stripeWebhook = catchAsyncError(async (req, res, next) => {
   const sig = req.headers["stripe-signature"];
   let event;
