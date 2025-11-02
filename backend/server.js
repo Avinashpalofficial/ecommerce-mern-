@@ -6,6 +6,7 @@ import productRouter from "./routes/productRoutes.js";
 import cookieParser from "cookie-parser";
 import errorMiddleware from "./middleware/error.js";
 import OrderRouter from "./routes/orderRoutes.js";
+import paymentRouter from "./routes/paymentRoutes.js";
 import { upload } from "./config/cloudinary.js";
 import cloudinary from "./config/cloudinary.js";
 
@@ -28,6 +29,7 @@ const PORT = process.env.PORT || 5000;
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", productRouter);
 app.use("/api/v1", OrderRouter);
+app.use("/api/v1",paymentRouter)
 app.get("/", (req, res) => {
   res.send("project is ready");
 });
