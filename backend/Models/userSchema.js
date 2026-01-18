@@ -19,7 +19,7 @@ const userschema = new mongoose.Schema(
     },
     firstName: String,
     lastName: String,
-    dateofBirth: Date,
+    // dateofBirth: Date,
     roles: {
       type: [String], //Array of string for roles
       default: ["user"],
