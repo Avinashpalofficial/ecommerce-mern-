@@ -9,12 +9,15 @@ export const newOrder = catchAsyncError(async (req, res, next) => {
   const {
     orderItems,
     shippingInfo,
-    itemsPrice,
-    taxPrice,
-    shippingPrice,
-    totalPrice,
-    paymentInfo,
   } = req.body;
+  const itemsPrice = orderItems.reduce((acc,item)=>acc+item.price *item.quantity,
+                                      0
+                
+    
+  )
+  const taxPrice =0
+  const shippingPrice =0
+  const totalPrice = itemsPrice + taxPrice + shippingPrice;
   const order = await Order.create({
     orderItems,
     shippingInfo,
@@ -22,7 +25,10 @@ export const newOrder = catchAsyncError(async (req, res, next) => {
     taxPrice,
     shippingPrice,
     totalPrice,
-    paymentInfo,
+    paymentInfo:{
+             id:'stripe',
+             status:'pending'
+    },
     paidAt: Date.now(),
     user: req.user.id,
   });
