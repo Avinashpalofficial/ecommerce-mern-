@@ -8,12 +8,13 @@ import {
   resetpassword,
 } from "../controllers/authController.js";
 import adminLogin from "../controllers/adminController.js";
+import { authUser } from "../middleware/auth.js";
 
 const authRouter = express.Router();
 
 authRouter.post("/user/register", registerUser);
 authRouter.post("/user/login", loginUser);
-authRouter.get("/logout", logoutUser);
+authRouter.get("/user/logout", logoutUser);
 authRouter.post("/password/forgot", forgotPassword);
 authRouter.put("/password/reset/:token", resetpassword);
 authRouter.post("/admin/login", adminLogin);

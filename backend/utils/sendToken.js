@@ -14,7 +14,7 @@ import jwt from "jsonwebtoken";
     expires: new Date(Date.now() + cookieExpire * 24 * 60 * 60 * 1000),
     httpOnly: true,
     secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+    sameSite: "lax",
   };
   res
     .status(statusCode)

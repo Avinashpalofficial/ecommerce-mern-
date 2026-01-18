@@ -1,5 +1,6 @@
 import express from "express";
 import {
+  getProducts,
   createProduct,
   getSingleProduct,
   updateProduct,
@@ -8,7 +9,7 @@ import {
 import { authUser, authAdmin } from "../middleware/auth.js";
 import { upload } from "../config/cloudinary.js";
 const productRouter = express.Router();
-
+productRouter.get('/allProducts',getProducts)
 productRouter.post(
   "/admin/product/new",
   authAdmin,
