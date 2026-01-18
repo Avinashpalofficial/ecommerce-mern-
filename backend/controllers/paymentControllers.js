@@ -4,36 +4,13 @@ import Stripe from "stripe";
 import ErrorHandler from "../utils/errorHandler.js";
 import Order from "../Models/Order.js";
 import catchAsyncError from "../middleware/asyncError.js";
-import { success } from "zod";
+
+
 
 const stripe = Stripe(process.env.STRIPE_SECRET_KEY);
 
-//Process payment
-export const processPayment = catchAsyncError(async (req, res, next) => {
-  const { orderId } = req.body;
-  const order = await Order.findById(orderId);
-  if (!order) {
-    return next(new ErrorHandler("Order not found ", 400));
-  }
-  if (order.user.toString() !== req.user.id.toString()) {
-    return next(
-      new ErrorHandler("You are not authorized to access this order", 403)
-    );
-  }
-  const amount = order.totalPrice;
 
-  const paymentIntent = await stripe.paymentIntents.create({
-    // Stripe API method that creates a payment intent//paymentIntents->A Stripe object that tracks the payment lifecycle from creation through success/failure
-    amount: Math.round(amount * 100),
-    currency: "usd",
-    metadata: {
-      company: "Ecommerce",
-    },
-  });
-  res
-    .status(200)
-    .json({ success: true, client_secret: paymentIntent.client_secret });
-});
+
 //Send Stripe API Key   to frontend
 export const sendStripeApiKey = catchAsyncError(async (req, res, next) => {
   res
@@ -83,11 +60,13 @@ export const createCheckoutSession = catchAsyncError(async (req, res, next) => {
     payment_method_types: ["card"],
     line_items,
     mode: "payment",
-    success_url: `https://example.com/order/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `https://example.com/order/cancel`,
+    success_url: `http://localhost:5173/order/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `http://localhost:5173/order/cancel`,
+
     customer_email: req.user.email,
     client_reference_id: req.user._id.toString(),
     metadata: {
+      orderId:order._id.toString(),
       totalPrice: order.totalPrice.toString(),
     },
   });
@@ -97,9 +76,18 @@ export const createCheckoutSession = catchAsyncError(async (req, res, next) => {
     url: session.url,
   });
 });
-
+//verifysession 
+ export const verifysession = catchAsyncError(async(req,res,next)=>{
+                     const session =await stripe.checkout.sessions.retrieve(req.params.sessionId)
+                     if(!session || session.payment_status!=='paid') {
+                      return next(new ErrorHandler('payment not completed',400))
+                     }
+                     const order = await Order.findById(session.metadata.orderId).populate('user','email')
+                     res.status(200).json({success:true,order})
+ })
 //Handle Stripe Webhook
 export const stripeWebhook = catchAsyncError(async (req, res, next) => {
+  
   const sig = req.headers["stripe-signature"];
   let event;
 
@@ -109,6 +97,7 @@ export const stripeWebhook = catchAsyncError(async (req, res, next) => {
       sig,
       process.env.STRIPE_WEBHOOK_SECRET
     );
+    console.log("event:", event.type);
   } catch (err) {
     return res.status(400).send(`Webhook Error: ${err.message}`);
   }
@@ -116,7 +105,23 @@ export const stripeWebhook = catchAsyncError(async (req, res, next) => {
   // Handle the checkout.session.completed event
   if (event.type === "checkout.session.completed") {
     const session = event.data.object;
+    const orderId= session.metadata.orderId
+    const order = await Order.findById(orderId)
+    if (order && !order.isPaid) {
+      order.isPaid = true;
+      order.paidAt = Date.now();
+      order.orderStatus = "Processing";
+      order.paymentInfo = {
+        id: session.payment_intent,
+        status: session.payment_status,
+        method: "Stripe",
+      };
 
+      await order.save()
+      
+      
+      
+    }
     // Here you would typically create the order in your database
     // You can use the session metadata to get order details
     console.log("Payment successful for session:", session.id);
