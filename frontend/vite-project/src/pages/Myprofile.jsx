@@ -1,17 +1,21 @@
 import React from "react";
 import { FaBox, FaLock, FaMapMarkerAlt, FaPhone, FaWallet, FaCreditCard, FaShoppingBag } from "react-icons/fa";
+import { useNavigate } from "react-router-dom";
 
 export default function ProfileDashboard() {
+  const navigate = useNavigate()
   const cards = [
     {
       icon: <FaBox size={28} />,
       title: "Your Orders",
       text: "Track, return, or buy again",
+      path:'/my-orders'
     },
     {
       icon: <FaLock size={28} />,
       title: "Login & Security",
       text: "Edit login name, email & password",
+      path: '/send-otp'
     },
     {
       icon: <FaMapMarkerAlt size={28} />,
@@ -48,6 +52,7 @@ export default function ProfileDashboard() {
         {cards.map((card, i) => (
           <div
             key={i}
+            onClick={()=>card.path && navigate(card.path)}
             className="border rounded-lg p-5 bg-white hover:shadow-md transition cursor-pointer"
           >
             <div className="text-green-600">{card.icon}</div>
