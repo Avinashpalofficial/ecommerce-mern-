@@ -4,6 +4,7 @@ import Order from "../Models/Order.js";
 import User from "../Models/userSchema.js";
 
 import Product from "../Models/product.js";
+   
 
 export const newOrder = catchAsyncError(async (req, res, next) => {
   const {
@@ -37,6 +38,16 @@ export const newOrder = catchAsyncError(async (req, res, next) => {
   });
   res.status(200).json({ success: true, message: order });
 });
+//Get logged in Users orders /api/v1/orders/me
+export const myOrders = catchAsyncError(async (req, res, next) => {
+  const orders = await Order.find({ user: req.user.id });
+  // console.log("orders:",orders);
+  
+  if (!orders.length) {
+    return next(new ErrorHandler("Orders not found"));
+  }
+  res.status(200).json({ success: true, orders });
+});
 //Get single order//  api/v1/orders/:id
 export const getSingleOrder = catchAsyncError(async (req, res, next) => {
   const order = await Order.findById(req.params.id).populate(
@@ -49,14 +60,7 @@ export const getSingleOrder = catchAsyncError(async (req, res, next) => {
   res.status(200).json({ success: true, order });
 });
 
-//Get logged in Users orders /api/v1/orders/me
-export const myOrders = catchAsyncError(async (req, res, next) => {
-  const orders = await Order.findById({ user: req.user.id });
-  if (!orders) {
-    return next(new ErrorHandler("Orders not found"));
-  }
-  res.status(200).json({ success: true, orders });
-});
+
 //Get all Orders admin- /api/v1/admin/orders
 export const allOrders = catchAsyncError(async (req, res, next) => {
   const orders = await Order.find(); //collect the all orders
