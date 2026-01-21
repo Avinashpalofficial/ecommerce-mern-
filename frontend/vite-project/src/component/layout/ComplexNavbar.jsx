@@ -73,6 +73,9 @@ function ProfileMenu({onlogout}) {
            if(label==="My Profile"){
                  navigate('/myprofile')
            }
+           if(label==="Edit Profile"){
+                 navigate('/send-otp')
+           }
           }}>
             {React.createElement(icon, { className: "h-4 w-4" })}
             <Typography variant="small">{label}</Typography>
