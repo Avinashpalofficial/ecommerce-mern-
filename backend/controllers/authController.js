@@ -170,11 +170,75 @@ const resetpassword = catchAsyncError(async (req, res, next) => {
   await user.save();
   sendToken(user, 200, res);
 });
+
+  const sendEmailOtp= catchAsyncError(async(req,res,next)=>{
+   
+    
+           const {email} = req.body
+            const user = await User.findOne({email})
+            console.log('user is:',user);
+            
+            if(!user){
+              return next(new ErrorHandler('user not found',400))
+            }   
+            const otp = Math.floor(100000 +Math.random()*900000)
+            //hash otp
+            const hashedOtp = crypto
+            .createHash('sha256')
+            .update(otp.toString())
+            .digest('hex')
+            user.emailOtp = hashedOtp
+            user.emailOtpExpire = Date.now()+5*60*1000   //5min
+            await user.save()
+            await sendEmail(
+                   {
+                    email:user.email,
+                    subject: 'Email Verification OTP',
+                    message: ` <h2>Email Verification</h2>
+                               <p>Your OTP is <b>${otp}</b></p>
+                               <p>This OTP is valid for 5 minutes.</p>`
+                   }
+            )
+            res.status(200).json({success:true, message:"otp send successfully"})
+
+  })
+     const  verifyEmailOtp =  catchAsyncError(async(req,res,next)=>{
+                   const email = req.body?.email;
+                   const otp = req.body?.otp;
+                    const user = await  User.findOne({email})
+                    console.log('user:',user);
+                    
+                    if(!user){
+                      return  next(
+                        new ErrorHandler('user not found',400)
+                      )
+                    }
+                    if(!user.emailOtp || Date.now() > user.emailOtpExpire){
+                      return  next(
+                        new ErrorHandler('otp is expired',400)
+                      )
+                    }
+                const hashedOtp = crypto
+                                  .createHash('sha256')
+                                  .update(otp.toString())
+                                  .digest('hex')
+                    if(hashedOtp !== user.emailOtp ){
+                      return   next(new ErrorHandler('otp is invalid',400))
+                    } 
+                user.isEmailVerified =true
+                user.emailOtp= undefined
+                user.emailOtpExpire= undefined     
+                await user.save()   
+                
+              res.status(200).json({success:true,message:'OTP verified successfully'})
+     })
 export {
   registerUser,
   loginUser,
   logoutUser,
   forgotPassword,
   resetpassword,
+  sendEmailOtp,
+  verifyEmailOtp
   
 };
