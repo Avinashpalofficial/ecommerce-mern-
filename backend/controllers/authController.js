@@ -232,6 +232,30 @@ const resetpassword = catchAsyncError(async (req, res, next) => {
                 
               res.status(200).json({success:true,message:'OTP verified successfully'})
      })
+  //Request Email Change   
+   const requestEmailChange= catchAsyncError(async(req,res,next)=>{
+                 const {newEmail}= req.body
+                 const user = await User.findById(req.user.id)
+                 const otp =   Math.floor(100000+Math.random()*900000)
+                 const hashOtp = crypto
+                                 .createHash('sha256')
+                                 .update(otp.toString())
+                                 .digest('hex')
+                user.emailChange={
+                  newEmail,
+                  oldEmailOtpHash:hashOtp,
+                  expiresAt:Date.now()+5*60*1000
+                }  
+                await user.save()
+                await sendEmail({
+                  email:user.email,
+                    subject: 'Email Verification OTP',
+                    message: ` <h2>Email Verification</h2>
+                               <p>Your OTP is <b>${otp}</b></p>
+                               <p>This OTP is valid for 5 minutes.</p>`
+                })     
+                res.status(200).json({success:true,message:'otp send to old email'})          
+   })
 export {
   registerUser,
   loginUser,
@@ -239,6 +263,7 @@ export {
   forgotPassword,
   resetpassword,
   sendEmailOtp,
-  verifyEmailOtp
+  verifyEmailOtp,
+  requestEmailChange
   
 };
