@@ -21,11 +21,13 @@ export default function ProfileDashboard() {
       icon: <FaMapMarkerAlt size={28} />,
       title: "Your Addresses",
       text: "Add or manage delivery addresses",
+      path: '/address'
     },
     {
       icon: <FaShoppingBag size={28} />,
       title: "Clover Business Account",
       text: "Manage business settings & invoices",
+      path: '/business-account'
     },
     {
       icon: <FaCreditCard size={28} />,
@@ -36,11 +38,13 @@ export default function ProfileDashboard() {
       icon: <FaWallet size={28} />,
       title: "Wallet / Balance",
       text: "Add money to your Clover wallet",
+      path:'/clover-wallet'
     },
     {
       icon: <FaPhone size={28} />,
       title: "Contact Support",
       text: "Chat or call customer support",
+      path:'/clover-support'
     },
   ];
 
