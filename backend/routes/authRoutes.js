@@ -6,6 +6,9 @@ import {
   logoutUser,
   forgotPassword,
   resetpassword,
+  sendEmailOtp,
+  verifyEmailOtp,
+  requestEmailChange,
 } from "../controllers/authController.js";
 import adminLogin from "../controllers/adminController.js";
 import { authUser } from "../middleware/auth.js";
@@ -18,5 +21,8 @@ authRouter.get("/user/logout", logoutUser);
 authRouter.post("/password/forgot", forgotPassword);
 authRouter.put("/password/reset/:token", resetpassword);
 authRouter.post("/admin/login", adminLogin);
+authRouter.post('/email/send-otp',sendEmailOtp)
+authRouter.post('/email/verify-otp',verifyEmailOtp)
+authRouter.post('/email/change',authUser,requestEmailChange)
 
 export default authRouter;
