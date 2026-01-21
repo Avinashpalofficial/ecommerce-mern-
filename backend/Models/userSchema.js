@@ -30,6 +30,22 @@ const userschema = new mongoose.Schema(
         ref: "Order",
       },
     ],
+    isEmailVerified:{
+      type:Boolean,
+      default:false
+    },
+    emailChange:{
+            newEmail:String,
+            oldEmailOtpHash:String,
+            newEmailOtpHash:String,
+            oldEmailVerified:{
+              type:Boolean,
+              default:false
+            },
+            expiresAt:Date
+    },
+    emailOtp:String,
+    emailOtpExpire:Date,
     resetPasswordToken: String,
     resetPasswordExpire: Date,
   },
