@@ -256,6 +256,37 @@ const resetpassword = catchAsyncError(async (req, res, next) => {
                 })     
                 res.status(200).json({success:true,message:'otp send to old email'})          
    })
+   //Verify OLD Email OTP 
+       const verifyOldEmailOtp = catchAsyncError(async(req,res,next)=>{
+                      const user = await User.findById(req.user.id)
+                      const enterHashedOtp =  crypto
+                                              .createHash('sha256')
+                                              .update(req.body.otp)
+                                              .digest('hex')    
+                        if(!user.emailChange || enterHashedOtp!==user.emailChange.oldEmailOtpHash ){
+                          return next(new ErrorHandler('invalid otp',400))
+                        } 
+                        if(Date.now()>user.emailChange.expiresAt){
+                          return next(new ErrorHandler('otp expired',400))
+                        } 
+                      user.emailChange.oldEmailVerified= true  
+                      //generate new otp for new email
+                      const otp = Math.floor(100000+Math.random()*900000)
+                      const hashedOtp = crypto
+                                        .createHash('sha256')
+                                        .update(otp.toString())
+                                        .digest('hex')
+                         user.emailChange.newEmailOtpHash=hashedOtp               
+                      await user.save()
+                      await sendEmail({
+                         email:user.emailChange.newEmail,
+                    subject: 'Email Verification OTP',
+                    message: ` <h2>Email Verification</h2>
+                               <p>Your OTP is <b>${otp}</b></p>
+                               <p>This OTP is valid for 5 minutes.</p>`
+                      }) 
+                      res.status(200).json({success:true , message:'Old email verified. OTP sent to new email'})                 
+       })
 export {
   registerUser,
   loginUser,
@@ -264,6 +295,7 @@ export {
   resetpassword,
   sendEmailOtp,
   verifyEmailOtp,
-  requestEmailChange
+  requestEmailChange,
+  verifyOldEmailOtp
   
 };
