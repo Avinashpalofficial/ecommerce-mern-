@@ -309,6 +309,19 @@ const resetpassword = catchAsyncError(async (req, res, next) => {
                      await user.save()
                      res.status(200).json({success:true ,message:"email updated successfully"}) 
              })
+          const updateName = catchAsyncError(async(req,res,next)=>{
+                 const firstName = req.body.firstName
+                 const lastName = req.body.lastName
+                 const user = await User.findById(req.user.id)
+                 if(!user){
+                   return next(new ErrorHandler('user is not exist',400))
+                 }
+                 user.firstName =firstName
+                 user.lastName = lastName
+                 await user.save()
+                 res.status(200).json({success:true, message:"name updated successfully"})
+
+          })   
 export {
   registerUser,
   loginUser,
@@ -319,6 +332,7 @@ export {
   verifyEmailOtp,
   requestEmailChange,
   verifyOldEmailOtp,
-  verifyNewEmailOtp
+  verifyNewEmailOtp,
+  updateName
   
 };
