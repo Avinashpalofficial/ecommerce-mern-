@@ -287,6 +287,28 @@ const resetpassword = catchAsyncError(async (req, res, next) => {
                       }) 
                       res.status(200).json({success:true , message:'Old email verified. OTP sent to new email'})                 
        })
+       //Verify NEW Email OTP & Update Email
+             const verifyNewEmailOtp= catchAsyncError(async(req,res,next)=>{
+                                   const user = await User.findById(req.user.id)
+                                   if(!user){
+                                     return next(new ErrorHandler('user not found',400))
+                                   }
+                               const hashedNewEmailOtp =  crypto
+                                                         .createHash('sha256')
+                                                         .update(req.body.otp)
+                                                         .digest('hex') 
+                             if(!user.emailChange || hashedNewEmailOtp !== user.emailChange.newEmailOtpHash|| !user.emailChange.oldEmailVerified){
+                              return  next(new ErrorHandler('invalid otp',400))
+                             }                               
+                             if(Date.now()> user.emailChange.expiresAt){
+                              return   next (new ErrorHandler('otp expired',400))
+                             }
+                     // now update the email
+                     user.email = user.emailChange.newEmail
+                     user.emailChange =undefined    
+                     await user.save()
+                     res.status(200).json({success:true ,message:"email updated successfully"}) 
+             })
 export {
   registerUser,
   loginUser,
@@ -296,6 +318,7 @@ export {
   sendEmailOtp,
   verifyEmailOtp,
   requestEmailChange,
-  verifyOldEmailOtp
+  verifyOldEmailOtp,
+  verifyNewEmailOtp
   
 };
