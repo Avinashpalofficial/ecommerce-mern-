@@ -9,6 +9,9 @@ import {
   sendEmailOtp,
   verifyEmailOtp,
   requestEmailChange,
+  verifyOldEmailOtp,
+  verifyNewEmailOtp,
+  updateName,
 } from "../controllers/authController.js";
 import adminLogin from "../controllers/adminController.js";
 import { authUser } from "../middleware/auth.js";
@@ -24,5 +27,9 @@ authRouter.post("/admin/login", adminLogin);
 authRouter.post('/email/send-otp',sendEmailOtp)
 authRouter.post('/email/verify-otp',verifyEmailOtp)
 authRouter.post('/email/change',authUser,requestEmailChange)
+authRouter.post('/email/verify-old',authUser,verifyOldEmailOtp)
+authRouter.post('/email/verify-new',authUser,verifyNewEmailOtp)
+authRouter.put("/user/update-name", authUser, updateName);
+
 
 export default authRouter;
