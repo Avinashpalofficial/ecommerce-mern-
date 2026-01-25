@@ -8,12 +8,31 @@ export const login =  async(email,password)=>{
                             email,
                             password
                         },
-                    {withCredentials:true}
+                    
                 )
-                toast.success("login successfully")
+                if(res.data.success){
+                    
+                   toast.success("login successfully")
+                }else{
+                  toast.error("login failed")   
+                }
                    return res.data
                     } catch (error) {
-                         toast.error(error.response?.data?.message) || "login failed"
+                         toast.error(error.response?.data?.message || "login failed")
                          throw error
                     }
+}
+export  const logout =   async()=>{
+      try {
+                 const res =  await api.post('/auth/admin/logout')
+                 if(res.data.success){
+                    toast.success('logout successfully!')
+                 }
+                 else{
+                    toast.error("failed")
+                 }
+      } catch (error) {
+                         toast.error(error.response?.data?.message || "logout failed")
+        
+      }
 }
