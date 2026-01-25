@@ -3,7 +3,7 @@ import bcrypt from "bcrypt";
 import Admin from "../Models/Admin.js";
 import catchAsyncError from "../middleware/asyncError.js";
 import ErrorHandler from "../utils/errorHandler.js";
-const adminLogin = catchAsyncError(async (req, res, next) => {
+export const adminLogin = catchAsyncError(async (req, res, next) => {
   const { email, password } = req.body;
 
   if (!process.env.ADMIN_EMAIL || !process.env.ADMIN_PASSWORD) {
@@ -65,5 +65,8 @@ const adminLogin = catchAsyncError(async (req, res, next) => {
       token,
     });
 });
+export const adminLogout = catchAsyncError(async(req,res,next)=>{
+                               
+})
 
-export default adminLogin;
+
