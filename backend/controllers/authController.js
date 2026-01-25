@@ -54,8 +54,10 @@ const loginUser = catchAsyncError(async (req, res, next) => {
 //logout user
 const logoutUser = catchAsyncError(async (req, res, next) => {
   res.cookie("token", null, {
-    expires: new Date(Date.now()),
+    expires: new Date(0),
     httpOnly: true,
+    secure:process.env.NODE_ENV === "production",
+     sameSite:"strict"
   });
   res.status(200).json({
     success: true,
@@ -235,6 +237,13 @@ const resetpassword = catchAsyncError(async (req, res, next) => {
   //Request Email Change   
    const requestEmailChange= catchAsyncError(async(req,res,next)=>{
                  const {newEmail}= req.body
+                 if(!newEmail || !newEmail.trim()){
+                  return next(new ErrorHandler('New email is required',400))
+                 }
+                 const emailRegex = /^\S+@\S+\.\S+$/
+                 if(!emailRegex.test(newEmail)){
+                     return  next(new ErrorHandler('invalid email format',400))
+                 }
                  const user = await User.findById(req.user.id)
                  const otp =   Math.floor(100000+Math.random()*900000)
                  const hashOtp = crypto
@@ -307,11 +316,18 @@ const resetpassword = catchAsyncError(async (req, res, next) => {
                      user.email = user.emailChange.newEmail
                      user.emailChange =undefined    
                      await user.save()
-                     res.status(200).json({success:true ,message:"email updated successfully"}) 
+                     res.status(200).json({success:true ,message:"email updated successfully",user:{
+                            email :user.email
+                     }}) 
              })
           const updateName = catchAsyncError(async(req,res,next)=>{
-                 const firstName = req.body.firstName
-                 const lastName = req.body.lastName
+                 const {name} =req.body
+                 if(!name || name.trim().length<2 ){
+                  return next (new ErrorHandler('invalid name',400))
+                 }
+                 const parts = name.trim().split(" ")
+                 const firstName= parts[0]
+                 const lastName = parts.slice(1).join(" ") || "";
                  const user = await User.findById(req.user.id)
                  if(!user){
                    return next(new ErrorHandler('user is not exist',400))
@@ -319,7 +335,13 @@ const resetpassword = catchAsyncError(async (req, res, next) => {
                  user.firstName =firstName
                  user.lastName = lastName
                  await user.save()
-                 res.status(200).json({success:true, message:"name updated successfully"})
+                 res.status(200).json({success:true, message:"name updated successfully",
+
+                  user: {
+                          firstName: user.firstName,
+                          lastName: user.lastName
+  }
+                 })
 
           })   
 export {
