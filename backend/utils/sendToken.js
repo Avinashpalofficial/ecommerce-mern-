@@ -19,7 +19,7 @@ import jwt from "jsonwebtoken";
   res
     .status(statusCode)
     .cookie("token", token, options)
-    .json({ success: true, user, token });
+    .json({ success: true, user});
 };
 
 export default sendToken;
