@@ -4,6 +4,7 @@ import Order from "../Models/Order.js";
 import User from "../Models/userSchema.js";
 
 import Product from "../Models/product.js";
+import Admin from "../Models/Admin.js";
    
 
 export const newOrder = catchAsyncError(async (req, res, next) => {
@@ -57,6 +58,11 @@ export const getSingleOrder = catchAsyncError(async (req, res, next) => {
   if (!order) {
     return next(new ErrorHandler("Order not found", 401));
   }
+       if(req.user.role !=="admin"){
+         if(order.user._id !== req.user.id){
+              return next(new ErrorHandler('Not authorized',403))
+         }
+       }
   res.status(200).json({ success: true, order });
 });
 
