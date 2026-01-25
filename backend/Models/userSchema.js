@@ -1,5 +1,4 @@
 import mongoose from "mongoose";
-
 const userschema = new mongoose.Schema(
   {
     username: {
@@ -21,7 +20,7 @@ const userschema = new mongoose.Schema(
     lastName: String,
     // dateofBirth: Date,
     roles: {
-      type: [String], //Array of string for roles
+      type: ["user","admin"], //Array of string for roles
       default: ["user"],
     },
     orders: [
