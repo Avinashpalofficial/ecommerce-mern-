@@ -28,27 +28,46 @@ export const authUser = catchAsyncError(async (req, res, next) => {
 
 //ADMIN AUTHENTICATION
 
-export const authAdmin = catchAsyncError(async (req, res, next) => {
-  const token = req.cookies.adminToken;
-  //  console.log("token=",token);
-  if (!token) {
-    return next(new ErrorHandler("Please login to access this resource", 401));
-  }
+export const authAdmin = async (req, res, next) => {
 
   try {
+    console.log("COOKIES:", req.cookies);
+
+    const token = req.cookies.adminToken;
+
+    if (!token) {
+      return res.status(401).json({
+        success: false,
+        message: "Please login first",
+      });
+    }
+
     const decoded = jwt.verify(token, process.env.JWT_SECRET);
-    const admin = await Admin.findById(decoded.id);
-    //  console.log("admin=",admin);
+
+    const admin = await Admin.findById(decoded.id).select("-password");
 
     if (!admin) {
-      return next(new ErrorHandler("Admin not found", 401));
+      return res.status(401).json({
+        success: false,
+        message: "Admin not found",
+      });
     }
-    req.admin = admin;
-    next();
-  } catch (error) {
-    console.log("token", token);
 
-    console.error("Admin JWT Error =", error.message);
-    return next(new ErrorHandler("Invalid or expired admin token", 401));
+    // 🔴 MOST IMPORTANT
+    req.admin = admin;
+
+    next();
+
+  } catch (error) {
+
+    console.error("AUTH ERROR:", error);
+
+    return res.status(401).json({
+      success: false,
+      message: "Invalid or expired token",
+    });
   }
-});
+};
+
+
+
