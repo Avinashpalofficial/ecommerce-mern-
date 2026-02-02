@@ -59,7 +59,7 @@ export const getSingleOrder = catchAsyncError(async (req, res, next) => {
     return next(new ErrorHandler("Order not found", 401));
   }
        if(req.user.role !=="admin"){
-         if(order.user._id !== req.user.id){
+         if(order.user._id.toString() !== req.user.id.toString()){
               return next(new ErrorHandler('Not authorized',403))
          }
        }
@@ -69,7 +69,9 @@ export const getSingleOrder = catchAsyncError(async (req, res, next) => {
 
 //Get all Orders admin- /api/v1/admin/orders
 export const allOrders = catchAsyncError(async (req, res, next) => {
-  const orders = await Order.find(); //collect the all orders
+  const orders = await Order.find().populate("user","name email"); //collect the all orders
+    console.log("orders:",orders);
+    
   if (!orders) {
     return next(new ErrorHandler("Orders not found", 401));
   }
