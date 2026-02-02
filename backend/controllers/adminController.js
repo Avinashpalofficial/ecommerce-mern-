@@ -47,8 +47,8 @@ export  const adminLogin = catchAsyncError(async(req, res, next) => {
   const options = {
     expires: new Date(Date.now() + cookieExpire * 24 * 60 * 60 * 1000),
     httpOnly: true, //secure from js access,
-    secure: process.env.NODE_ENV === "production",
-    sameSite: "strict",
+         secure:false, // secure: process.env.NODE_ENV === "production",
+    sameSite: "lax",
   };
   res
     .status(200)
@@ -77,5 +77,30 @@ export  const adminLogout = catchAsyncError(async(req,res,next)=>{
                   message:"logout successfully"
                 })             
 })
+export const getAdminProfile = async (req, res) => {
+  try {
+    const admin = await Admin.findById(req.admin.id);
+    
+    if (!admin) {
+      return res.status(404).json({
+        success: false,
+        message: 'Admin not found'
+      });
+    }
+
+    res.status(200).json({
+      success: true,
+      admin
+    });
+  } catch (error) {
+    console.error('Get profile error:', error);
+    res.status(500).json({
+      success: false,
+      message: 'Server error'
+    });
+  }
+};
+
+
 
 
