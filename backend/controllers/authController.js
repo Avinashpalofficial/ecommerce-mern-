@@ -65,6 +65,20 @@ const logoutUser = catchAsyncError(async (req, res, next) => {
   });
 });
 
+ const  getUserProfile=  async(req,res)=>{
+          const user =   await User.findById(req.user.id)
+          if(!user){
+            res.status(200).json({
+              success:false,
+              message:"user is not found"
+            })
+          }
+          res.status(200).json({
+            success:true,
+            user
+          })
+ }
+
 //forgot password
 
 const forgotPassword = catchAsyncError(async (req, res, next) => {
@@ -355,6 +369,7 @@ export {
   requestEmailChange,
   verifyOldEmailOtp,
   verifyNewEmailOtp,
-  updateName
+  updateName,
+  getUserProfile
   
 };
