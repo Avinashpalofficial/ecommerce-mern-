@@ -60,8 +60,8 @@ export const createCheckoutSession = catchAsyncError(async (req, res, next) => {
     payment_method_types: ["card"],
     line_items,
     mode: "payment",
-    success_url: `http://localhost:5173/order/success?session_id={CHECKOUT_SESSION_ID}`,
-    cancel_url: `http://localhost:5173/order/cancel`,
+    success_url: `${process.env.CLIENT_URL}/order/success?session_id={CHECKOUT_SESSION_ID}`,
+    cancel_url: `${process.env.CLIENT_URL}/order/cancel`,
 
     customer_email: req.user.email,
     client_reference_id: req.user._id.toString(),
