@@ -57,7 +57,7 @@ const logoutUser = catchAsyncError(async (req, res, next) => {
     expires: new Date(0),
     httpOnly: true,
     secure:process.env.NODE_ENV === "production",
-     sameSite:"strict"
+     sameSite:"none"
   });
   res.status(200).json({
     success: true,
