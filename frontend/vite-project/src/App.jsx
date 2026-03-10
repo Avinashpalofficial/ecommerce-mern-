@@ -23,7 +23,10 @@ import AddressForm from './pages/AddressForm.jsx'
 import CloverSignup from './pages/BusinessAccount.jsx'
 import CloverWallet from './pages/Wallet.jsx'
 import CloverSupportChoice from './pages/CloverSupport.jsx'
-
+import UpdateName from './pages/UpdateName.jsx'
+import RequestEmailChange from './pages/RequestEmail.jsx'
+import VerifyOldEmail from './pages/VerifyOldEmail.jsx'
+import VerifyNewEmail from './pages/VerifyNewEmail.jsx'
 const router = createBrowserRouter([
   {
       path:'/',
@@ -31,7 +34,7 @@ const router = createBrowserRouter([
   },
     {
         path:'/signup',
-        element:<><Signup/><Footer/></>
+        element:<><Signup/></>
     },
     {
         path:'/login',
@@ -105,6 +108,22 @@ const router = createBrowserRouter([
     {
         path:'/clover-support',
         element:<><ComplexNavbar/><CloverSupportChoice/><Footer/></>
+    },
+    {
+        path:'/update-name',
+        element:<><ComplexNavbar/><UpdateName/><Footer/></>
+    },
+    {
+        path:'/request-email-change',
+        element:<><ComplexNavbar/><RequestEmailChange/><Footer/></>
+    },
+    {
+        path:'/verify-old-email',
+        element:<><ComplexNavbar/><VerifyOldEmail/><Footer/></>
+    },
+    {
+        path:'/verify-new-email',
+        element:<><ComplexNavbar/><VerifyNewEmail/><Footer/></>
     },
           
 ])
