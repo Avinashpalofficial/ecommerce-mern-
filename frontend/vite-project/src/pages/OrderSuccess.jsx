@@ -13,7 +13,7 @@ export default function OrderSuccess(){
         const sessionId = new URLSearchParams(location.search).get("session_id")
                  if(!sessionId) return;
                         try {
-                             const res = await axios.get(`http://localhost:3000/api/v1/stripe/session/${sessionId}`,
+                             const res = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/stripe/session/${sessionId}`,
                                 {withCredentials:true}
                              )
                              setOrder(res.data.order)
