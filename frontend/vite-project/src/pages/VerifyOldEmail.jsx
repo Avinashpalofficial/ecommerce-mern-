@@ -26,7 +26,7 @@ export default function VerifyOldEmail() {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:3000/api/v1/auth/email/verify-old",
+        `${import.meta.env.VITE_API_URL}/api/v1/auth/email/verify-old`,
         { otp },
         { withCredentials: true }
       );
