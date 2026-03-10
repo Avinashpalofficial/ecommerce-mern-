@@ -9,7 +9,7 @@ export const AuthProvider = ({children})=>{
 
         const getUserProfile=  async()=>{
               try {
-                         const response =  await axios.get("http://localhost:3000/api/v1/auth/user/me",
+                         const response =  await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/auth/user/me`,
                           {withCredentials:true}
                          )
                            console.log("ME API:", response.data);
@@ -35,7 +35,7 @@ export const AuthProvider = ({children})=>{
 
         const login = async(email,password)=>{
                   try {
-                    const response =  await axios.post("http://localhost:3000/api/v1/auth/user/login",
+                    const response =  await axios.post(`${import.meta.env.VITE_API_URL}/api/v1/auth/user/login`,
                     {email,password},
                     {withCredentials:true}
                   )
@@ -51,7 +51,7 @@ export const AuthProvider = ({children})=>{
                 }
                 const logout = async()=>{
                   try {
-                    const response= await axios.get("http://localhost:3000/api/v1/auth/user/logout")
+                    const response= await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/auth/user/logout`)
                     if(response.data.success){
                       setUser(null)
                       setIsAuthenticated(false)
