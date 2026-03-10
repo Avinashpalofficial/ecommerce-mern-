@@ -9,7 +9,7 @@ const OtpInput = ({ onChange }) => {
     onChange(value);
   };
 
-  return (
+  return ( 
     <input
       type="text"
       value={otp}
