@@ -30,17 +30,22 @@ cloudinary.config({
 
 // ✅ CORS — local + production dono handle hoga
 const allowedOrigins = [
-  "http://localhost:5173",         // user frontend local
-  "http://localhost:5174",         // admin dashboard local
-  process.env.CLIENT_URL,          // user frontend production (Vercel)
-  process.env.ADMIN_URL,           // admin dashboard production (Vercel)
+  "http://localhost:5173",
+  "http://localhost:5174",
+  process.env.CLIENT_URL,
+  process.env.ADMIN_URL,
 ];
 
 app.use(
   cors({
     origin: (origin, callback) => {
-      // Postman/server-to-server calls mein origin nahi hota — allow karo
-      if (!origin || allowedOrigins.includes(origin)) {
+      if (!origin) return callback(null, true);
+      
+      // Vercel ke saare subdomains allow karo
+      const isVercel = origin.endsWith(".vercel.app");
+      const isAllowed = allowedOrigins.includes(origin);
+      
+      if (isVercel || isAllowed) {
         callback(null, true);
       } else {
         callback(new Error(`CORS blocked: ${origin}`));
@@ -51,7 +56,6 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
-
 app.use(express.json());
 
 // ✅ PORT — Railway khud PORT set karta hai
