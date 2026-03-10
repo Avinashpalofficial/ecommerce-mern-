@@ -13,11 +13,12 @@ import { stripeWebhook } from "./controllers/paymentControllers.js";
 import { DashboardRouter } from "./routes/dashboardRoute.js";
 import cors from "cors";
 
-//load environment modules
+// load environment variables
 dotenv.config();
 
-//connect to mongoDB
+// connect to mongoDB
 connectDB();
+
 const app = express();
 app.use(cookieParser());
 
@@ -26,35 +27,57 @@ cloudinary.config({
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
-//initialize express App
+
+// ✅ CORS — local + production dono handle hoga
+const allowedOrigins = [
+  "http://localhost:5173",         // user frontend local
+  "http://localhost:5174",         // admin dashboard local
+  process.env.CLIENT_URL,          // user frontend production (Vercel)
+  process.env.ADMIN_URL,           // admin dashboard production (Vercel)
+];
+
 app.use(
   cors({
-       origin:[
-         
-         "http://localhost:5173",
-      ],
-       credentials:true,
-        methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"]
+    origin: (origin, callback) => {
+      // Postman/server-to-server calls mein origin nahi hota — allow karo
+      if (!origin || allowedOrigins.includes(origin)) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked: ${origin}`));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
   })
-)
+);
+
 app.use(express.json());
-const PORT = process.env.PORT;
+
+// ✅ PORT — Railway khud PORT set karta hai
+const PORT = process.env.PORT || 5000;
+
+// Routes
 app.use("/api/v1/auth", authRouter);
 app.use("/api/v1", productRouter);
 app.use("/api/v1", OrderRouter);
-app.use("/api/v1",paymentRouter)
-app.use("/api/v1",DashboardRouter)
+app.use("/api/v1", paymentRouter);
+app.use("/api/v1", DashboardRouter);
+
+// Stripe webhook — express.raw() CORS ke baad, express.json() se pehle hona chahiye
 app.post(
   "/api/v1/payment/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
-app.get('/api/message',(req,res)=>{
-        res.json({message:'Backend se response aaya'})
-})
+
+// Health check — Railway verify karta hai isse
+app.get("/api/health", (req, res) => {
+  res.json({ status: "ok", message: "Backend chal raha hai ✅" });
+});
+
 app.use(errorMiddleware);
 
 app.listen(PORT, () => {
-  console.log(`server is running on port ${PORT}`);
+  console.log(`Server is running on port ${PORT}`);
 });
