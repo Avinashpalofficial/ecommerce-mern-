@@ -1,16 +1,12 @@
-import { useState } from "react";
+import React, { useState } from "react";
 import { useNavigate } from "react-router-dom";
-import {
-  Card,
-  Input,
-  Checkbox,
-  Button,
-  Typography,
-} from "@material-tailwind/react";
+import { Input, Button, Typography } from "@material-tailwind/react";
 import axios from "axios";
 import { ToastContainer, toast } from "react-toastify";
+import { FiUser, FiMail, FiLock } from "react-icons/fi";
 
 const Signup = () => {
+
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
 
@@ -22,148 +18,181 @@ const Signup = () => {
     password: "",
   });
 
-  const handleSubmit = (e) => {
-    const { name, value } = e.target;
-    setFormData((prev) => ({ ...prev, [name]: value }));
+  const handleChange = (e) => {
+    setFormData({
+      ...formData,
+      [e.target.name]: e.target.value,
+    });
   };
 
+
   const submitHandler = async (e) => {
+
     e.preventDefault();
     setLoading(true);
 
     try {
-      const response = await axios.post(
+
+      const res = await axios.post(
         "http://localhost:3000/api/v1/auth/user/register",
         formData
       );
 
-      toast.success(response.data.message);
+      toast.success("Account created successfully!");
 
       setTimeout(() => {
-        navigate("/");
-      }, 2000);
+        navigate("/login");
+      }, 1500);
+
     } catch (error) {
-      toast.error(error.response.data.message);
+
+      toast.error(
+        error.response?.data?.message || "Signup failed"
+      );
+
+    } finally {
+      setLoading(false);
     }
   };
 
+
   return (
-    <div className="min-h-screen grid md:grid-cols-2 bg-gradient-to-br from-blue-50 to-purple-50">
 
-      {/* LEFT SIDE - MATCHED HEIGHT PANEL */}
-      <div className="flex flex-col justify-center p-12 items-center 
-      bg-gradient-to-br from-indigo-200/80 via-purple-200/80 to-blue-200/80
-      backdrop-blur-xl border-r border-white/40 shadow-xl">
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-700 px-4">
 
-        <div className="max-w-md text-center">
-          <h1 className="text-4xl font-extrabold text-gray-800 drop-shadow">
-            Welcome to Our Website 👋
-          </h1>
+      {/* Card */}
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-8">
 
-          <p className="mt-4 text-lg text-gray-700">
-            Join a clean and modern UI experience with smooth colors & great design.
-          </p>
 
-          <div className="mt-8">
-            <span className="px-7 py-3 text-lg rounded-xl 
-            bg-white/70 backdrop-blur-md shadow font-semibold text-gray-700">
-              Start Your Journey 🚀
-            </span>
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+
+          <div className="w-14 h-14 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-2xl font-bold">
+            C
           </div>
+
         </div>
 
-      </div>
 
-      {/* RIGHT SIDE - SIGNUP FORM */}
-      <div className="flex justify-center items-center p-6">
-        <div className="backdrop-blur-xl bg-white/70 border border-white/60 
-        shadow-2xl p-10 rounded-3xl w-[450px] sm:w-[520px]">
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
+          Create Account
+        </h2>
 
-          <Typography variant="h4" className="text-center font-bold mb-4">
-            Create an Account
-          </Typography>
+        <p className="text-center text-gray-500 mb-6 text-sm">
+          Join CLOVER and start your journey
+        </p>
 
-          <Typography color="gray" className="text-center mb-8 text-sm">
-            Please fill in your details to continue.
-          </Typography>
 
-          <form className="flex flex-col gap-5" onSubmit={submitHandler}>
-            <Input
-              size="lg"
-              label="Username"
+        <form onSubmit={submitHandler} className="space-y-4">
+
+
+          {/* Username */}
+          <div className="relative">
+
+            <FiUser className="absolute top-3.5 left-3 text-gray-400" />
+
+            <input
+              type="text"
               name="username"
+              placeholder="Username"
               value={formData.username}
-              onChange={handleSubmit}
-              className="!border-gray-300 rounded-xl"
+              onChange={handleChange}
+              className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
 
-            <Input
-              size="lg"
-              label="First Name"
-              name="firstName"
-              value={formData.firstName}
-              onChange={handleSubmit}
-              className="!border-gray-300 rounded-xl"
-            />
+          </div>
 
-            <Input
-              size="lg"
-              label="Last Name"
-              name="lastName"
-              value={formData.lastName}
-              onChange={handleSubmit}
-              className="!border-gray-300 rounded-xl"
-            />
 
-            <Input
-              size="lg"
-              label="Email address"
+          {/* First Name */}
+          <input
+            type="text"
+            name="firstName"
+            placeholder="First Name"
+            value={formData.firstName}
+            onChange={handleChange}
+            className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+          />
+
+
+          {/* Last Name */}
+          <input
+            type="text"
+            name="lastName"
+            placeholder="Last Name"
+            value={formData.lastName}
+            onChange={handleChange}
+            className="w-full border rounded-lg px-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+          />
+
+
+          {/* Email */}
+          <div className="relative">
+
+            <FiMail className="absolute top-3.5 left-3 text-gray-400" />
+
+            <input
+              type="email"
               name="email"
+              placeholder="Email address"
               value={formData.email}
-              onChange={handleSubmit}
-              className="!border-gray-300 rounded-xl"
+              onChange={handleChange}
+              className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
 
-            <Input
+          </div>
+
+
+          {/* Password */}
+          <div className="relative">
+
+            <FiLock className="absolute top-3.5 left-3 text-gray-400" />
+
+            <input
               type="password"
-              size="lg"
-              label="Password"
               name="password"
+              placeholder="Password"
               value={formData.password}
-              onChange={handleSubmit}
-              className="!border-gray-300 rounded-xl"
+              onChange={handleChange}
+              className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
             />
 
-            <Checkbox
-              label={
-                <Typography color="gray" className="text-sm">
-                  I agree to the{" "}
-                  <a href="#" className="underline text-indigo-600 font-medium">
-                    Terms & Conditions
-                  </a>
-                </Typography>
-              }
-            />
+          </div>
 
-            <Button
-              fullWidth
-              type="submit"
-              className="rounded-xl py-3 bg-gradient-to-r from-indigo-500 to-purple-500"
-            >
-              {loading ? "Please wait..." : "Sign Up"}
-            </Button>
 
-            <Typography color="gray" className="text-center text-sm">
-              Already have an account?{" "}
-              <a href="/login" className="text-indigo-700 underline font-semibold">
-                Login
-              </a>
-            </Typography>
-          </form>
-        </div>
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition disabled:opacity-60"
+          >
+            {loading ? "Creating..." : "Sign Up"}
+          </button>
+
+        </form>
+
+
+        {/* Login Link */}
+        <p className="text-sm text-center text-gray-500 mt-4">
+          Already have an account?{" "}
+          <span
+            onClick={() => navigate("/login")}
+            className="text-indigo-600 font-semibold cursor-pointer hover:underline"
+          >
+            Login
+          </span>
+        </p>
+
+
+        {/* Footer */}
+        <p className="text-xs text-center text-gray-400 mt-6">
+          © {new Date().getFullYear()} CLOVER Admin Panel
+        </p>
+
+
+        <ToastContainer />
+
       </div>
 
-      <ToastContainer />
     </div>
   );
 };
