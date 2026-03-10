@@ -25,7 +25,7 @@ export default function UpdateName() {
       setLoading(true);
 
       const res = await axios.put(
-        "http://localhost:3000/api/v1/auth/user/update-name",
+        `${import.meta.env.VITE_API_URL}/api/v1/auth/user/update-name`,
         { name },
         { withCredentials: true }
       );
