@@ -56,6 +56,27 @@ app.use(
     allowedHeaders: ["Content-Type", "Authorization"],
   })
 );
+
+app.use(
+  cors({
+    origin: (origin, callback) => {
+      if (!origin) return callback(null, true);
+      
+      // Vercel ke saare subdomains allow karo
+      const isVercel = origin.endsWith(".vercel.app");
+      const isAllowed = allowedOrigins.includes(origin);
+      
+      if (isVercel || isAllowed) {
+        callback(null, true);
+      } else {
+        callback(new Error(`CORS blocked: ${origin}`));
+      }
+    },
+    credentials: true,
+    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
+    allowedHeaders: ["Content-Type", "Authorization"],
+  })
+);
 app.use(express.json());
 
 // ✅ PORT — Railway khud PORT set karta hai
