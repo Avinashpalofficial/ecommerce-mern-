@@ -23,7 +23,7 @@ export default function PaymentSection() {
     try {
 
       const res = await axios.get(
-        `http://localhost:3000/api/v1/orders/${orderId}`,
+        `${import.meta.env.VITE_API_URL}/api/v1/orders/${orderId}`,
         { withCredentials: true }
       );
 
@@ -52,7 +52,7 @@ export default function PaymentSection() {
     try {
 
       const { data } = await axios.post(
-        "http://localhost:3000/api/v1/create-checkout-session",
+        `${import.meta.env.VITE_API_URL}/api/v1/create-checkout-session`,
         { orderId },
         {
           headers: {
