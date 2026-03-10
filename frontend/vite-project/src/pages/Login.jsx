@@ -8,130 +8,139 @@ import {
 } from "@material-tailwind/react";
 import axios from "axios";
 import { useNavigate } from "react-router-dom";
+import { useAuth } from "../context/AuthContext";
+import { FiMail, FiLock, FiEye, FiEyeOff } from "react-icons/fi";
 
 const Login = () => {
-    const [form ,setForm] = useState({
-      email :'',
-      password:''
-    })
+    const {login,loading} =useAuth()
     const [error,setError]= useState("")
+    const [email, setEmail] = useState("");
+    const [password, setPassword] = useState("");
+    const [showPass, setShowPass] = useState(false);
     const navigate = useNavigate()
-    const handleSubmit = (e)=>{
-       const {name,value} = e.target
-       setForm((prev)=>({...prev , [name]:value}) )
+  const handleSubmit=  async(e)=>{
+     e.preventDefault()
+     if (!email || !password) {
+      setError("Please fill all required fields");
+      return;
     }
-      const handleLogin = async(e)=>{
-        e.preventDefault()
-        setError('')
-        try {
-             const res =  await axios.post('http://localhost:3000/api/v1/auth/user/login',form,
-              {
-                headers: {"Content-Type":'application/json'},
-                 withCredentials: true
-              }
-             )
-             //token save
-             localStorage.setItem("token", res.data.token);
-             if(res.data.user){
-                       localStorage.setItem('user',JSON.stringify(res.data.user))
-             }
-             alert('login successful')
-             navigate('/')
-     } catch (error) {
-  if (error.response) {
-    setError(error.response.data.msg || "Login failed");
-  } else {
-    setError("Server error, try again later");
-  }
-}
+    try {
 
+      const success = await login(email, password);
 
+      if (success) {
+        navigate("/");
       }
-  return (
-    <div className="min-h-screen grid md:grid-cols-2 bg-gradient-to-br from-blue-50 to-purple-50">
 
-      {/* LEFT WELCOME PANEL */}
-      <div className="hidden md:flex flex-col justify-center items-center p-12 
-      bg-gradient-to-br from-indigo-200/80 via-purple-200/80 to-blue-200/80
-      backdrop-blur-xl border-r border-white/40 shadow-xl">
+    } catch {
+      setError("Invalid email or password");
+    }
+  }
+    
+ return (
+    <div className="min-h-screen flex items-center justify-center bg-gradient-to-br from-indigo-600 to-purple-700 px-4">
 
-        <Typography variant="h2" className="font-extrabold text-gray-800 mb-4 drop-shadow-sm">
-          Welcome Back 👋
-        </Typography>
 
-        <Typography className="text-gray-700 text-lg text-center leading-relaxed max-w-md">
-          Login to continue your journey with a clean and modern interface.
-          We’re happy to see you again!
-        </Typography>
+      {/* Card */}
+      <div className="bg-white rounded-xl shadow-xl w-full max-w-md p-8">
 
-        <div className="mt-8">
-          <span className="px-6 py-3 text-lg rounded-xl bg-white/50 backdrop-blur-md shadow text-gray-700 font-semibold">
-            Secure & Fast Login 🔐
-          </span>
+
+        {/* Logo */}
+        <div className="flex justify-center mb-6">
+
+          <div className="w-14 h-14 bg-indigo-600 text-white rounded-xl flex items-center justify-center text-2xl font-bold">
+            C
+          </div>
+
         </div>
-      </div>
 
-      {/* RIGHT LOGIN FORM */}
-      <div className="flex justify-center items-center p-6">
-        <div className="backdrop-blur-xl bg-white/70 border border-white/60 shadow-2xl 
-        p-10 rounded-3xl w-[400px] sm:w-[480px]">
 
-          <Typography variant="h4" color="blue-gray" className="text-center mb-4 font-bold">
-            Login
-          </Typography>
+        <h2 className="text-2xl font-bold text-center text-gray-800 mb-2">
+          CLOVER user
+        </h2>
 
-          <Typography color="gray" className="text-center text-sm mb-6">
-            Nice to meet you again.
-          </Typography>
+        <p className="text-center text-gray-500 mb-6 text-sm">
+          Login to manage your store
+        </p>
 
-          <form className="flex flex-col gap-5" onSubmit={handleLogin}>
-            <Input
-              size="lg"
-              label="Email Address"
-              name='email'
-              value={form.email}
-              onChange={handleSubmit}
-              className="!border-gray-300 rounded-xl"
+
+        {/* Error */}
+        {error && (
+          <p className="bg-red-50 text-red-600 text-sm p-2 rounded mb-4 text-center">
+            {error}
+          </p>
+        )}
+
+
+        <form onSubmit={handleSubmit} className="space-y-4">
+
+
+          {/* Email */}
+          <div className="relative">
+
+            <FiMail className="absolute top-3.5 left-3 text-gray-400" />
+
+            <input
+              type="email"
+              placeholder="Email address"
+              className="w-full border rounded-lg pl-10 pr-3 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+              value={email}
+              onChange={(e) => setEmail(e.target.value)}
             />
 
-            <Input
-              type="password"
-              size="lg"
-              label="Password"
-              name="password"
-              value={form.password}
-              onChange={handleSubmit}
-              className="!border-gray-300 rounded-xl"
+          </div>
+
+
+          {/* Password */}
+          <div className="relative">
+
+            <FiLock className="absolute top-3.5 left-3 text-gray-400" />
+
+            <input
+              type={showPass ? "text" : "password"}
+              placeholder="Password"
+              className="w-full border rounded-lg pl-10 pr-10 py-2 focus:ring-2 focus:ring-indigo-400 outline-none"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
             />
 
-            <Checkbox
-              label={
-                <Typography color="gray" className="text-sm">
-                  I agree to the{" "}
-                  <a href="#" className="underline font-medium text-indigo-600">
-                    Terms & Conditions
-                  </a>
-                </Typography>
-              }
-            />
-
-            <Button
-            type="submit"
-              fullWidth
-              className="rounded-xl py-3 bg-gradient-to-r from-indigo-500 to-purple-500"
+            <button
+              type="button"
+              onClick={() => setShowPass(!showPass)}
+              className="absolute right-3 top-3 text-gray-400 hover:text-gray-600"
             >
-              Login
-            </Button>
+              {showPass ? <FiEyeOff /> : <FiEye />}
+            </button>
 
-            <Typography color="gray" className="text-center text-sm">
-              Create new account?{" "}
-              <a href="/signup" className="font-semibold text-indigo-700 underline">
-                Sign Up
-              </a>
-            </Typography>
+          </div>
 
-          </form>
-        </div>
+
+          {/* Button */}
+          <button
+            type="submit"
+            disabled={loading}
+            className="w-full bg-indigo-600 hover:bg-indigo-700 text-white py-2 rounded-lg font-medium transition disabled:opacity-60"
+          >
+            {loading ? "Signing in..." : "Login"}
+          </button>
+
+        </form>
+<p className="text-sm text-center text-gray-500 mt-4">
+  Don't have an account?{" "}
+  <span
+    onClick={() => navigate("/signup")}
+    className="text-indigo-600 font-semibold cursor-pointer hover:underline"
+  >
+    Sign Up
+  </span>
+</p>
+
+
+        {/* Footer */}
+        <p className="text-xs text-center text-gray-400 mt-6">
+          © {new Date().getFullYear()} CLOVER Admin Panel
+        </p>
+
       </div>
 
     </div>
