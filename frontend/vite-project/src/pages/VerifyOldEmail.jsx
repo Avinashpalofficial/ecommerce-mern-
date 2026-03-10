@@ -4,7 +4,7 @@ import { useNavigate } from "react-router-dom";
 import { motion } from "framer-motion";
 
 import StepIndicator from "../component/layout/StepIndicator";
-import OtpInput from "../component/layout/otpInput";
+import OtpInput from "../component/layout/OtpInput.jsx";
 
 export default function VerifyOldEmail() {
 
