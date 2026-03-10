@@ -30,7 +30,7 @@ export default function RequestEmailChange() {
       setLoading(true);
 
       const res = await axios.post(
-        "http://localhost:3000/api/v1/auth/email/change",
+        `${import.meta.env.VITE_API_URL}/api/v1/auth/email/change`,
         { newEmail },
         { withCredentials: true }
       );
