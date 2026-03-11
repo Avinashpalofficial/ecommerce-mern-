@@ -1,12 +1,13 @@
 import axios from "axios";
 import { useEffect, useState } from "react";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 
 export default function OrderSuccess() {
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
+  const[countdown,setCountdown] = useState(5)
   const location = useLocation();
-
+  const navigate = useNavigate()
   useEffect(() => {
     const sessionId = new URLSearchParams(location.search).get("session_id");
     if (!sessionId) return;
@@ -35,7 +36,22 @@ export default function OrderSuccess() {
 
     poll();
   }, []);
+                 useEffect(() => {
+    if (order?.isPaid) {
+      const timer = setInterval(() => {
+        setCountdown((prev) => prev - 1);
+      }, 1000);
 
+      const redirect = setTimeout(() => {
+        navigate("/myorders");
+      }, 5000);
+
+      return () => {
+        clearInterval(timer);
+        clearTimeout(redirect);
+      };
+    }
+  }, [order]);
   if (loading)
     return <h2 style={{ textAlign: "center" }}>Checking payment status...</h2>;
 
