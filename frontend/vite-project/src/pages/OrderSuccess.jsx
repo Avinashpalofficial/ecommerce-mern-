@@ -43,7 +43,7 @@ export default function OrderSuccess() {
       }, 1000);
 
       const redirect = setTimeout(() => {
-        navigate("/myorders");
+        navigate("/my-orders");
       }, 5000);
 
       return () => {
