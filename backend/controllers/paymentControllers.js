@@ -77,14 +77,30 @@ export const createCheckoutSession = catchAsyncError(async (req, res, next) => {
   });
 });
 //verifysession 
- export const verifysession = catchAsyncError(async(req,res,next)=>{
-                     const session =await stripe.checkout.sessions.retrieve(req.params.sessionId)
-                     if(!session || session.payment_status!=='paid') {
-                      return next(new ErrorHandler('payment not completed',400))
-                     }
-                     const order = await Order.findById(session.metadata.orderId).populate('user','email')
-                     res.status(200).json({success:true,order})
- })
+ export const verifysession = catchAsyncError(async (req, res, next) => {
+  const session = await stripe.checkout.sessions.retrieve(req.params.sessionId);
+  
+  if (!session || session.payment_status !== 'paid') {
+    return next(new ErrorHandler('payment not completed', 400));
+  }
+  
+  const order = await Order.findById(session.metadata.orderId).populate('user', 'email');
+  
+  // ✅ Webhook late aaye toh yahan bhi update karo
+  if (order && !order.isPaid) {
+    order.isPaid = true;
+    order.paidAt = Date.now();
+    order.orderStatus = "Processing";
+    order.paymentInfo = {
+      id: session.payment_intent,
+      status: session.payment_status,
+      method: "Stripe",
+    };
+    await order.save();
+  }
+  
+  res.status(200).json({ success: true, order });
+});
 //Handle Stripe Webhook
 export const stripeWebhook = catchAsyncError(async (req, res, next) => {
   
