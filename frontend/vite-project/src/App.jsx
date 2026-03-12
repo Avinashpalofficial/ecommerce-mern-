@@ -27,6 +27,7 @@ import UpdateName from './pages/UpdateName.jsx'
 import RequestEmailChange from './pages/RequestEmail.jsx'
 import VerifyOldEmail from './pages/VerifyOldEmail.jsx'
 import VerifyNewEmail from './pages/VerifyNewEmail.jsx'
+import OrderDetail from './pages/OrderDetail.jsx'
 const router = createBrowserRouter([
   {
       path:'/',
@@ -72,6 +73,11 @@ const router = createBrowserRouter([
         path:'/order/success',
         element:<><OrderSuccess/></>
     }, 
+    {
+        path:'/order/:id',
+        element:<><ComplexNavbar/><OrderDetail/><Footer/></>
+    }, 
+
     
     {
         path:'/cart',
