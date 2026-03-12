@@ -1,165 +1,112 @@
 import React from "react";
 import { Link } from "react-router-dom";
-import { Mail, Phone, MapPin, ArrowUpRight } from "lucide-react";
+import { ShoppingCart, Mail, Phone, MapPin, Facebook, Twitter, Instagram, Youtube } from "lucide-react";
 
 const Footer = () => {
   const currentYear = new Date().getFullYear();
 
-  const footerLinks = {
-    shop: [
-      { name: "New Arrivals", path: "/allproduct" },
-      { name: "Best Sellers", path: "/allproduct" },
-      { name: "Sale", path: "/allproduct" },
-      { name: "Collections", path: "/allproduct" },
-    ],
-    company: [
-      { name: "About Us", path: "/about" },
-      { name: "Contact", path: "/contact" },
-      { name: "Blog", path: "/blog" },
-      { name: "Careers", path: "#" },
-    ],
-    support: [
-      { name: "Help Center", path: "/clover-support" },
-      { name: "Track Order", path: "/my-orders" },
-      { name: "Returns", path: "#" },
-      { name: "Shipping Info", path: "#" },
-    ],
-  };
-
   return (
-    <footer className="bg-secondary text-secondary-foreground">
-      {/* Main Footer */}
+    <footer className="bg-gray-900 text-gray-300">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-5 gap-12">
-          {/* Brand Section */}
-          <div className="lg:col-span-2">
-            <Link to="/" className="inline-block mb-6">
-              <span className="text-3xl font-serif font-semibold">Clover</span>
-            </Link>
-            <p className="text-secondary-foreground/70 leading-relaxed mb-8 max-w-sm">
-              Your destination for premium quality products. We curate the finest
-              selections to elevate your everyday experience.
-            </p>
 
-            {/* Contact Info */}
-            <div className="space-y-3">
-              <a
-                href="mailto:support@clover.com"
-                className="flex items-center gap-3 text-secondary-foreground/70 hover:text-secondary-foreground transition-colors"
-              >
-                <Mail size={18} />
-                <span>support@clover.com</span>
-              </a>
-              <a
-                href="tel:+919876543210"
-                className="flex items-center gap-3 text-secondary-foreground/70 hover:text-secondary-foreground transition-colors"
-              >
-                <Phone size={18} />
-                <span>+91 98765 43210</span>
-              </a>
-              <div className="flex items-start gap-3 text-secondary-foreground/70">
-                <MapPin size={18} className="mt-0.5 flex-shrink-0" />
-                <span>123 Clover Street, Mumbai, India</span>
+        {/* MAIN FOOTER */}
+        <div className="py-16 grid grid-cols-1 md:grid-cols-2 lg:grid-cols-4 gap-12">
+
+          {/* ABOUT */}
+          <div>
+            <div className="flex items-center gap-2 mb-6">
+              <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-lg flex items-center justify-center">
+                <ShoppingCart className="text-white" size={20} />
               </div>
+              <span className="text-2xl font-bold text-white">Clover</span>
+            </div>
+            <p className="text-gray-400 mb-6 leading-relaxed">
+              Your one-stop destination for premium quality products at unbeatable prices. Fast delivery and trusted service.
+            </p>
+            <div className="flex items-center gap-4">
+              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-emerald-500 rounded-full flex items-center justify-center transition-all">
+                <Facebook size={18} />
+              </a>
+              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-cyan-500 rounded-full flex items-center justify-center transition-all">
+                <Twitter size={18} />
+              </a>
+              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-pink-500 rounded-full flex items-center justify-center transition-all">
+                <Instagram size={18} />
+              </a>
+              <a href="#" className="w-10 h-10 bg-gray-800 hover:bg-red-500 rounded-full flex items-center justify-center transition-all">
+                <Youtube size={18} />
+              </a>
             </div>
           </div>
 
-          {/* Shop Links */}
+          {/* QUICK LINKS */}
           <div>
-            <h3 className="text-sm uppercase tracking-wider font-semibold mb-6">
-              Shop
-            </h3>
+            <h3 className="text-white font-semibold text-lg mb-6">Quick Links</h3>
             <ul className="space-y-3">
-              {footerLinks.shop.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-secondary-foreground/70 hover:text-secondary-foreground transition-colors inline-flex items-center gap-1 group"
-                  >
-                    {link.name}
-                    <ArrowUpRight
-                      size={14}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    />
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <Link to="/about" className="hover:text-emerald-400 transition">About Us</Link>
+              </li>
+              <li>
+                <Link to="/allproduct" className="hover:text-emerald-400 transition">Products</Link>
+              </li>
+              <li>
+                <Link to="/contact" className="hover:text-emerald-400 transition">Contact</Link>
+              </li>
+              <li>
+                <Link to="/blog" className="hover:text-emerald-400 transition">Blog</Link>
+              </li>
             </ul>
           </div>
 
-          {/* Company Links */}
+          {/* CUSTOMER SERVICE */}
           <div>
-            <h3 className="text-sm uppercase tracking-wider font-semibold mb-6">
-              Company
-            </h3>
+            <h3 className="text-white font-semibold text-lg mb-6">Customer Service</h3>
             <ul className="space-y-3">
-              {footerLinks.company.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-secondary-foreground/70 hover:text-secondary-foreground transition-colors inline-flex items-center gap-1 group"
-                  >
-                    {link.name}
-                    <ArrowUpRight
-                      size={14}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    />
-                  </Link>
-                </li>
-              ))}
+              <li>
+                <a href="#" className="hover:text-emerald-400 transition">Help Center</a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-emerald-400 transition">Track Order</a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-emerald-400 transition">Returns</a>
+              </li>
+              <li>
+                <a href="#" className="hover:text-emerald-400 transition">Shipping Info</a>
+              </li>
             </ul>
           </div>
 
-          {/* Support Links */}
+          {/* CONTACT INFO */}
           <div>
-            <h3 className="text-sm uppercase tracking-wider font-semibold mb-6">
-              Support
-            </h3>
-            <ul className="space-y-3">
-              {footerLinks.support.map((link) => (
-                <li key={link.name}>
-                  <Link
-                    to={link.path}
-                    className="text-secondary-foreground/70 hover:text-secondary-foreground transition-colors inline-flex items-center gap-1 group"
-                  >
-                    {link.name}
-                    <ArrowUpRight
-                      size={14}
-                      className="opacity-0 group-hover:opacity-100 transition-opacity"
-                    />
-                  </Link>
-                </li>
-              ))}
+            <h3 className="text-white font-semibold text-lg mb-6">Contact Us</h3>
+            <ul className="space-y-4">
+              <li className="flex items-start gap-3">
+                <MapPin size={18} className="text-emerald-400 mt-1 flex-shrink-0" />
+                <span className="text-gray-400">123 Clover Street, Mumbai, India</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Phone size={18} className="text-emerald-400 flex-shrink-0" />
+                <span className="text-gray-400">+91 98765 43210</span>
+              </li>
+              <li className="flex items-center gap-3">
+                <Mail size={18} className="text-emerald-400 flex-shrink-0" />
+                <span className="text-gray-400">support@clover.com</span>
+              </li>
             </ul>
           </div>
         </div>
 
-        {/* Bottom Bar */}
-        <div className="border-t border-secondary-foreground/10 py-8">
+        {/* BOTTOM BAR */}
+        <div className="border-t border-gray-800 py-8">
           <div className="flex flex-col md:flex-row items-center justify-between gap-4">
-            <p className="text-secondary-foreground/60 text-sm">
-              {currentYear} Clover. All rights reserved.
+            <p className="text-gray-400 text-sm">
+              {currentYear} Clover. All Rights Reserved.
             </p>
-
             <div className="flex items-center gap-6 text-sm">
-              <a
-                href="#"
-                className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors"
-              >
-                Privacy Policy
-              </a>
-              <a
-                href="#"
-                className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors"
-              >
-                Terms of Service
-              </a>
-              <a
-                href="#"
-                className="text-secondary-foreground/60 hover:text-secondary-foreground transition-colors"
-              >
-                Cookie Policy
-              </a>
+              <a href="#" className="hover:text-emerald-400 transition">Privacy Policy</a>
+              <a href="#" className="hover:text-emerald-400 transition">Terms of Service</a>
+              <a href="#" className="hover:text-emerald-400 transition">Cookie Policy</a>
             </div>
           </div>
         </div>

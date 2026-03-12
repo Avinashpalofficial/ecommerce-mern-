@@ -2,27 +2,19 @@ import React from "react";
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
-import { motion, AnimatePresence } from "framer-motion";
-import { ShoppingBag, User, Menu, X, Search, Heart, ChevronDown, Package, LogOut } from "lucide-react";
+import { motion } from "framer-motion";
+import { ShoppingCart, User, Menu, X, Search, Heart, ChevronDown } from "lucide-react";
 
 export default function ComplexNavbar() {
   const { user, logout, isAuthenticated, loading } = useAuth();
   const navigate = useNavigate();
   const [isMenuOpen, setIsMenuOpen] = React.useState(false);
   const [isProfileOpen, setIsProfileOpen] = React.useState(false);
-  const [isScrolled, setIsScrolled] = React.useState(false);
-
-  React.useEffect(() => {
-    const handleScroll = () => {
-      setIsScrolled(window.scrollY > 20);
-    };
-    window.addEventListener("scroll", handleScroll);
-    return () => window.removeEventListener("scroll", handleScroll);
-  }, []);
 
   if (loading) return null;
 
   const { cartItem = [] } = useCart();
+
   const cartCount = cartItem.reduce((total, item) => total + item.qty, 0);
 
   const handleLogout = async () => {
@@ -30,184 +22,146 @@ export default function ComplexNavbar() {
     navigate("/login");
   };
 
-  const navLinks = [
-    { name: "Home", path: "/" },
-    { name: "Shop", path: "/allproduct" },
-    { name: "About", path: "/about" },
-    { name: "Contact", path: "/contact" },
-  ];
-
   return (
-    <nav
-      className={`sticky top-0 z-50 transition-all duration-300 ${
-        isScrolled
-          ? "bg-card/95 backdrop-blur-md shadow-sm border-b border-border"
-          : "bg-transparent"
-      }`}
-    >
+    <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-        <div className="flex items-center justify-between h-20">
-          {/* Logo */}
-          <Link to="/" className="flex items-center gap-3 group">
-            <span className="text-3xl font-serif font-bold text-foreground tracking-tight">
+        <div className="flex items-center justify-between h-16">
+
+          {/* LOGO */}
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-lg flex items-center justify-center">
+              <ShoppingCart className="text-white" size={20} />
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent">
               Clover
             </span>
           </Link>
 
-          {/* Desktop Navigation */}
-          <div className="hidden lg:flex items-center gap-10">
-            {navLinks.map((link) => (
-              <Link
-                key={link.name}
-                to={link.path}
-                className="relative text-muted-foreground hover:text-foreground font-medium text-sm uppercase tracking-wider transition-colors group"
-              >
-                {link.name}
-                <span className="absolute -bottom-1 left-0 w-0 h-0.5 bg-primary transition-all group-hover:w-full" />
-              </Link>
-            ))}
+          {/* DESKTOP NAV */}
+          <div className="hidden md:flex items-center gap-8">
+            <Link to="/" className="text-gray-700 hover:text-emerald-600 font-medium transition">
+              Home
+            </Link>
+            <Link to="/allproduct" className="text-gray-700 hover:text-emerald-600 font-medium transition">
+              Products
+            </Link>
+            <Link to="/about" className="text-gray-700 hover:text-emerald-600 font-medium transition">
+              About
+            </Link>
+            <Link to="/contact" className="text-gray-700 hover:text-emerald-600 font-medium transition">
+              Contact
+            </Link>
           </div>
 
-          {/* Right Actions */}
-          <div className="flex items-center gap-2">
-            {/* Search */}
-            <button className="hidden md:flex items-center justify-center w-11 h-11 rounded-full hover:bg-muted transition-colors">
-              <Search size={20} className="text-foreground" />
+          {/* RIGHT ACTIONS */}
+          <div className="flex items-center gap-4">
+
+            {/* SEARCH */}
+            <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition">
+              <Search size={20} className="text-gray-600" />
             </button>
 
-            {/* Wishlist */}
-            <button className="hidden md:flex items-center justify-center w-11 h-11 rounded-full hover:bg-muted transition-colors">
-              <Heart size={20} className="text-foreground" />
+            {/* WISHLIST */}
+            <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition">
+              <Heart size={20} className="text-gray-600" />
             </button>
 
-            {/* Cart */}
-            <Link
-              to="/cart"
-              className="relative flex items-center justify-center w-11 h-11 rounded-full hover:bg-muted transition-colors"
-            >
-              <ShoppingBag size={20} className="text-foreground" />
+            {/* CART */}
+            <Link to="/cart" className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition">
+              <ShoppingCart size={20} className="text-gray-600" />
               {cartCount > 0 && (
-                <span className="absolute -top-0.5 -right-0.5 bg-primary text-primary-foreground text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
                   {cartCount > 9 ? "9+" : cartCount}
                 </span>
               )}
             </Link>
 
-            {/* User */}
+            {/* USER */}
             {isAuthenticated ? (
               <div className="relative">
                 <button
                   onClick={() => setIsProfileOpen(!isProfileOpen)}
-                  className="flex items-center gap-2 hover:bg-muted px-3 py-2 rounded-full transition-colors ml-2"
+                  className="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded-lg transition"
                 >
-                  <div className="w-9 h-9 bg-secondary text-secondary-foreground rounded-full flex items-center justify-center font-semibold text-sm">
-                    {user?.firstName?.[0]?.toUpperCase() || "U"}
+                  <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    {user?.firstName?.[0] || "U"}
                   </div>
-                  <ChevronDown
-                    size={16}
-                    className={`text-muted-foreground transition-transform hidden sm:block ${
-                      isProfileOpen ? "rotate-180" : ""
-                    }`}
-                  />
+                  <ChevronDown size={16} className={`text-gray-600 transition-transform ${isProfileOpen ? "rotate-180" : ""}`} />
                 </button>
 
-                <AnimatePresence>
-                  {isProfileOpen && (
-                    <motion.div
-                      initial={{ opacity: 0, y: 10, scale: 0.95 }}
-                      animate={{ opacity: 1, y: 0, scale: 1 }}
-                      exit={{ opacity: 0, y: 10, scale: 0.95 }}
-                      transition={{ duration: 0.15 }}
-                      className="absolute right-0 mt-3 w-64 bg-card rounded-2xl shadow-xl border border-border py-2 z-50"
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="font-semibold text-gray-900">{user?.firstName} {user?.lastName}</p>
+                      <p className="text-sm text-gray-500">{user?.email}</p>
+                    </div>
+
+                    <Link to="/myprofile" className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition" onClick={() => setIsProfileOpen(false)}>
+                      <User size={18} className="text-gray-600" />
+                      <span className="text-gray-700">My Profile</span>
+                    </Link>
+
+                    <Link to="/my-orders" className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition" onClick={() => setIsProfileOpen(false)}>
+                      <ShoppingCart size={18} className="text-gray-600" />
+                      <span className="text-gray-700">My Orders</span>
+                    </Link>
+
+                    <button
+                      onClick={() => {
+                        setIsProfileOpen(false);
+                        handleLogout();
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 hover:bg-red-50 transition text-red-600 border-t border-gray-100 mt-2"
                     >
-                      <div className="px-5 py-4 border-b border-border">
-                        <p className="font-semibold text-foreground">
-                          {user?.firstName} {user?.lastName}
-                        </p>
-                        <p className="text-sm text-muted-foreground truncate">
-                          {user?.email}
-                        </p>
-                      </div>
-
-                      <div className="py-2">
-                        <Link
-                          to="/myprofile"
-                          className="flex items-center gap-3 px-5 py-3 hover:bg-muted transition-colors"
-                          onClick={() => setIsProfileOpen(false)}
-                        >
-                          <User size={18} className="text-muted-foreground" />
-                          <span className="text-foreground">My Profile</span>
-                        </Link>
-
-                        <Link
-                          to="/my-orders"
-                          className="flex items-center gap-3 px-5 py-3 hover:bg-muted transition-colors"
-                          onClick={() => setIsProfileOpen(false)}
-                        >
-                          <Package size={18} className="text-muted-foreground" />
-                          <span className="text-foreground">My Orders</span>
-                        </Link>
-                      </div>
-
-                      <div className="border-t border-border pt-2">
-                        <button
-                          onClick={() => {
-                            setIsProfileOpen(false);
-                            handleLogout();
-                          }}
-                          className="w-full flex items-center gap-3 px-5 py-3 hover:bg-destructive/10 transition-colors text-destructive"
-                        >
-                          <LogOut size={18} />
-                          <span>Sign Out</span>
-                        </button>
-                      </div>
-                    </motion.div>
-                  )}
-                </AnimatePresence>
+                      <X size={18} />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
               </div>
             ) : (
               <button
                 onClick={() => navigate("/login")}
-                className="ml-2 bg-secondary text-secondary-foreground px-6 py-2.5 rounded-full font-medium text-sm hover:bg-secondary/90 transition-colors"
+                className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg hover:shadow-emerald-500/50 transition-all"
               >
-                Sign In
+                Login
               </button>
             )}
 
-            {/* Mobile Menu Toggle */}
+            {/* MOBILE MENU */}
             <button
               onClick={() => setIsMenuOpen(!isMenuOpen)}
-              className="lg:hidden flex items-center justify-center w-11 h-11 rounded-full hover:bg-muted transition-colors ml-1"
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition"
             >
               {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
             </button>
           </div>
         </div>
 
-        {/* Mobile Navigation */}
-        <AnimatePresence>
-          {isMenuOpen && (
-            <motion.div
-              initial={{ opacity: 0, height: 0 }}
-              animate={{ opacity: 1, height: "auto" }}
-              exit={{ opacity: 0, height: 0 }}
-              className="lg:hidden border-t border-border overflow-hidden"
-            >
-              <div className="py-6 flex flex-col gap-1">
-                {navLinks.map((link) => (
-                  <Link
-                    key={link.name}
-                    to={link.path}
-                    className="px-4 py-3 text-foreground font-medium hover:bg-muted rounded-lg transition-colors"
-                    onClick={() => setIsMenuOpen(false)}
-                  >
-                    {link.name}
-                  </Link>
-                ))}
-              </div>
-            </motion.div>
-          )}
-        </AnimatePresence>
+        {/* MOBILE NAV */}
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden border-t border-gray-200 py-4"
+          >
+            <div className="flex flex-col gap-3">
+              <Link to="/" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </Link>
+              <Link to="/allproduct" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition" onClick={() => setIsMenuOpen(false)}>
+                Products
+              </Link>
+              <Link to="/about" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition" onClick={() => setIsMenuOpen(false)}>
+                About
+              </Link>
+              <Link to="/contact" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition" onClick={() => setIsMenuOpen(false)}>
+                Contact
+              </Link>
+            </div>
+          </motion.div>
+        )}
       </div>
     </nav>
   );
