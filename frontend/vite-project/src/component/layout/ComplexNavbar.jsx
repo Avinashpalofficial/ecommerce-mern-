@@ -1,355 +1,168 @@
 import React from "react";
-
-import {
-  Navbar,
-  MobileNav,
-  Typography,
-  Button,
-  Menu,
-  MenuHandler,
-  MenuList,
-  MenuItem,
-  Avatar,
-  IconButton,
-} from "@material-tailwind/react";
-
-import {
-  CubeTransparentIcon,
-  UserCircleIcon,
-  CodeBracketSquareIcon,
-  ChevronDownIcon,
-  Cog6ToothIcon,
-  InboxArrowDownIcon,
-  LifebuoyIcon,
-  PowerIcon,
-  Bars2Icon,
-} from "@heroicons/react/24/solid";
-
 import { Link, useNavigate } from "react-router-dom";
 import { useCart } from "../../context/CartContext";
 import { useAuth } from "../../context/AuthContext";
-
 import { motion } from "framer-motion";
-
-
-/* ================= PROFILE MENU ================= */
-
-const profileMenuItems = [
-  { label: "My Profile", icon: UserCircleIcon, path: "/myprofile" },
-  { label: "Edit Profile", icon: Cog6ToothIcon, path: "/send-otp" },
-  { label: "Inbox", icon: InboxArrowDownIcon },
-  { label: "Help", icon: LifebuoyIcon },
-  { label: "Sign Out", icon: PowerIcon },
-];
-
-function ProfileMenu({ onLogout }) {
-
-  const [open, setOpen] = React.useState(false);
-  const navigate = useNavigate();
-
-
-  const handleClick = (item) => {
-
-    if (item.label === "Sign Out") {
-      onLogout();
-      return;
-    }
-
-    if (item.path) {
-      navigate(item.path);
-    }
-  };
-
-
-  return (
-
-    <Menu open={open} handler={setOpen} placement="bottom-end">
-
-      <MenuHandler>
-        <Button
-          variant="text"
-          className="flex items-center gap-1 rounded-full py-1 pr-2 pl-1"
-        >
-
-          <Avatar
-            size="sm"
-            variant="circular"
-            className="border p-0.5"
-            src="https://images.unsplash.com/photo-1633332755192-727a05c4013d"
-          />
-
-          <ChevronDownIcon
-            className={`h-4 w-4 transition-transform ${
-              open ? "rotate-180" : ""
-            }`}
-          />
-
-        </Button>
-      </MenuHandler>
-
-
-      <MenuList className="p-2 rounded-xl shadow-xl">
-
-        {profileMenuItems.map((item) => (
-
-          <MenuItem
-            key={item.label}
-            onClick={() => handleClick(item)}
-            className="flex items-center gap-2 rounded-lg"
-          >
-
-            {React.createElement(item.icon, {
-              className: "h-4 w-4 text-indigo-600",
-            })}
-
-            <Typography variant="small">
-              {item.label}
-            </Typography>
-
-          </MenuItem>
-
-        ))}
-
-      </MenuList>
-
-    </Menu>
-  );
-}
-
-
-/* ================= NAV LIST ================= */
-
-const navListItems = [
-  { label: "Contact", icon: UserCircleIcon, link: "/contact" },
-  { label: "About", icon: CubeTransparentIcon, link: "/about" },
-  { label: "Blog", icon: CodeBracketSquareIcon, link: "/blog" },
-];
-
-function NavList() {
-
-  return (
-
-    <ul className="flex flex-col gap-2 lg:flex-row lg:items-center">
-
-      {navListItems.map(({ label, icon, link }) => (
-
-        <Link key={label} to={link}>
-
-          <MenuItem className="flex items-center gap-2 rounded-lg">
-
-            {React.createElement(icon, {
-              className: "h-5 w-5 text-indigo-600",
-            })}
-
-            <span className="font-medium">
-              {label}
-            </span>
-
-          </MenuItem>
-
-        </Link>
-
-      ))}
-
-    </ul>
-  );
-}
-
-
-/* ================= MAIN NAVBAR ================= */
+import { ShoppingCart, User, Menu, X, Search, Heart, ChevronDown } from "lucide-react";
 
 export default function ComplexNavbar() {
-    const {user,logout,isAuthenticated,loading}= useAuth()
-    const navigate =  useNavigate()
-  const [isNavOpen, setIsNavOpen] = React.useState(false);
-  if(loading) return null
+  const { user, logout, isAuthenticated, loading } = useAuth();
+  const navigate = useNavigate();
+  const [isMenuOpen, setIsMenuOpen] = React.useState(false);
+  const [isProfileOpen, setIsProfileOpen] = React.useState(false);
+
+  if (loading) return null;
 
   const { cartItem = [] } = useCart();
 
-
-  /* ================= CART COUNT ================= */
-
-  const cartCount = cartItem.reduce(
-    (total, item) => total + item.qty,
-    0
-  );
-
-
-  /* ================= LOAD USER ================= */
-
-  
-
-
-  /* ================= RESPONSIVE ================= */
-
-  React.useEffect(() => {
-
-    const handleResize = () => {
-      if (window.innerWidth >= 960) setIsNavOpen(false);
-    };
-
-    window.addEventListener("resize", handleResize);
-
-    return () =>
-      window.removeEventListener("resize", handleResize);
-
-  }, []);
-
-
-  /* ================= LOGOUT ================= */
+  const cartCount = cartItem.reduce((total, item) => total + item.qty, 0);
 
   const handleLogout = async () => {
-
-  await logout();        // backend + context clear
-  navigate("/login");   // redirect
-};
-
-
+    await logout();
+    navigate("/login");
+  };
 
   return (
+    <nav className="sticky top-0 z-50 bg-white shadow-sm border-b border-gray-200">
+      <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+        <div className="flex items-center justify-between h-16">
 
-    /* ================= STICKY GLASS NAVBAR ================= */
-
-    <Navbar
-      className="
-        sticky top-0 z-50
-        mx-auto max-w-screen-xl
-        p-3 lg:px-6
-        bg-white/70 backdrop-blur-xl
-        border border-white/40
-        shadow-lg
-      "
-    >
-
-      <motion.div
-        initial={{ y: -20, opacity: 0 }}
-        animate={{ y: 0, opacity: 1 }}
-        transition={{ duration: 0.4 }}
-
-        className="
-          relative mx-auto
-          flex items-center justify-between
-          text-blue-gray-900
-        "
-      >
-
-
-        {/* ================= LOGO ================= */}
-
-        <Link
-          to="/"
-          className="font-bold text-2xl text-indigo-600"
-        >
-          Clover
-        </Link>
-
-
-        {/* ================= RIGHT ================= */}
-
-        <div className="flex items-center space-x-4">
-
-
-          {/* LINKS */}
-          <Link
-            to="/"
-            className="font-medium hover:text-indigo-600"
-          >
-            Home
+          {/* LOGO */}
+          <Link to="/" className="flex items-center gap-2">
+            <div className="w-10 h-10 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-lg flex items-center justify-center">
+              <ShoppingCart className="text-white" size={20} />
+            </div>
+            <span className="text-2xl font-bold bg-gradient-to-r from-emerald-600 to-cyan-600 bg-clip-text text-transparent">
+              Clover
+            </span>
           </Link>
-
-          <Link
-            to="/allproduct"
-            className="font-medium hover:text-indigo-600"
-          >
-            Products
-          </Link>
-
 
           {/* DESKTOP NAV */}
-          <div className="hidden lg:block">
-            <NavList />
+          <div className="hidden md:flex items-center gap-8">
+            <Link to="/" className="text-gray-700 hover:text-emerald-600 font-medium transition">
+              Home
+            </Link>
+            <Link to="/allproduct" className="text-gray-700 hover:text-emerald-600 font-medium transition">
+              Products
+            </Link>
+            <Link to="/about" className="text-gray-700 hover:text-emerald-600 font-medium transition">
+              About
+            </Link>
+            <Link to="/contact" className="text-gray-700 hover:text-emerald-600 font-medium transition">
+              Contact
+            </Link>
           </div>
 
+          {/* RIGHT ACTIONS */}
+          <div className="flex items-center gap-4">
 
-          {/* ================= CART ================= */}
+            {/* SEARCH */}
+            <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition">
+              <Search size={20} className="text-gray-600" />
+            </button>
 
-          <Link to="/cart" className="relative">
+            {/* WISHLIST */}
+            <button className="hidden md:flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition">
+              <Heart size={20} className="text-gray-600" />
+            </button>
 
-            <span className="text-2xl">🛒</span>
+            {/* CART */}
+            <Link to="/cart" className="relative flex items-center justify-center w-10 h-10 rounded-full hover:bg-gray-100 transition">
+              <ShoppingCart size={20} className="text-gray-600" />
+              {cartCount > 0 && (
+                <span className="absolute -top-1 -right-1 bg-emerald-500 text-white text-xs font-bold w-5 h-5 flex items-center justify-center rounded-full">
+                  {cartCount > 9 ? "9+" : cartCount}
+                </span>
+              )}
+            </Link>
 
-            {cartCount > 0 && (
+            {/* USER */}
+            {isAuthenticated ? (
+              <div className="relative">
+                <button
+                  onClick={() => setIsProfileOpen(!isProfileOpen)}
+                  className="flex items-center gap-2 hover:bg-gray-100 px-3 py-2 rounded-lg transition"
+                >
+                  <div className="w-8 h-8 bg-gradient-to-r from-emerald-500 to-cyan-500 rounded-full flex items-center justify-center text-white font-semibold text-sm">
+                    {user?.firstName?.[0] || "U"}
+                  </div>
+                  <ChevronDown size={16} className={`text-gray-600 transition-transform ${isProfileOpen ? "rotate-180" : ""}`} />
+                </button>
 
-              <span
-                className="
-                  absolute -top-2 -right-2
-                  bg-red-500 text-white
-                  text-xs font-bold
-                  w-5 h-5 flex items-center justify-center
-                  rounded-full
-                "
+                {isProfileOpen && (
+                  <div className="absolute right-0 mt-2 w-56 bg-white rounded-xl shadow-xl border border-gray-200 py-2 z-50">
+                    <div className="px-4 py-3 border-b border-gray-100">
+                      <p className="font-semibold text-gray-900">{user?.firstName} {user?.lastName}</p>
+                      <p className="text-sm text-gray-500">{user?.email}</p>
+                    </div>
+
+                    <Link to="/myprofile" className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition" onClick={() => setIsProfileOpen(false)}>
+                      <User size={18} className="text-gray-600" />
+                      <span className="text-gray-700">My Profile</span>
+                    </Link>
+
+                    <Link to="/my-orders" className="flex items-center gap-3 px-4 py-2 hover:bg-gray-50 transition" onClick={() => setIsProfileOpen(false)}>
+                      <ShoppingCart size={18} className="text-gray-600" />
+                      <span className="text-gray-700">My Orders</span>
+                    </Link>
+
+                    <button
+                      onClick={() => {
+                        setIsProfileOpen(false);
+                        handleLogout();
+                      }}
+                      className="w-full flex items-center gap-3 px-4 py-2 hover:bg-red-50 transition text-red-600 border-t border-gray-100 mt-2"
+                    >
+                      <X size={18} />
+                      <span>Logout</span>
+                    </button>
+                  </div>
+                )}
+              </div>
+            ) : (
+              <button
+                onClick={() => navigate("/login")}
+                className="bg-gradient-to-r from-emerald-500 to-cyan-500 text-white px-6 py-2 rounded-lg font-semibold hover:shadow-lg hover:shadow-emerald-500/50 transition-all"
               >
-                {cartCount > 9 ? "9+" : cartCount}
-              </span>
-
+                Login
+              </button>
             )}
 
-          </Link>
-
-
-          {/* ================= MOBILE ================= */}
-
-          <IconButton
-            size="sm"
-            variant="text"
-            onClick={() =>
-              setIsNavOpen((cur) => !cur)
-            }
-            className="lg:hidden"
-          >
-            <Bars2Icon className="h-6 w-6" />
-          </IconButton>
-
-
-          {/* ================= AUTH ================= */}
-
-          {isAuthenticated ? (
-
-  <div className="flex items-center gap-2">
-
-    <span className="font-semibold text-sm hidden sm:block">
-      Hi, {user?.firstName || "User"}
-    </span>
-
-    <ProfileMenu onLogout={handleLogout} />
-
-  </div>
-
-) : (
-
-  <Button
-    size="sm"
-    variant="gradient"
-    className="rounded-xl from-indigo-600 to-purple-600"
-  >
-    <Link to="/login">Login</Link>
-  </Button>
-
-)}
-
-
+            {/* MOBILE MENU */}
+            <button
+              onClick={() => setIsMenuOpen(!isMenuOpen)}
+              className="md:hidden flex items-center justify-center w-10 h-10 rounded-lg hover:bg-gray-100 transition"
+            >
+              {isMenuOpen ? <X size={24} /> : <Menu size={24} />}
+            </button>
+          </div>
         </div>
 
-      </motion.div>
-
-
-      {/* ================= MOBILE NAV ================= */}
-
-      <MobileNav open={isNavOpen} className="rounded-xl mt-2">
-
-        <NavList />
-
-      </MobileNav>
-
-    </Navbar>
+        {/* MOBILE NAV */}
+        {isMenuOpen && (
+          <motion.div
+            initial={{ opacity: 0, height: 0 }}
+            animate={{ opacity: 1, height: "auto" }}
+            exit={{ opacity: 0, height: 0 }}
+            className="md:hidden border-t border-gray-200 py-4"
+          >
+            <div className="flex flex-col gap-3">
+              <Link to="/" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition" onClick={() => setIsMenuOpen(false)}>
+                Home
+              </Link>
+              <Link to="/allproduct" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition" onClick={() => setIsMenuOpen(false)}>
+                Products
+              </Link>
+              <Link to="/about" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition" onClick={() => setIsMenuOpen(false)}>
+                About
+              </Link>
+              <Link to="/contact" className="px-4 py-2 hover:bg-gray-50 rounded-lg transition" onClick={() => setIsMenuOpen(false)}>
+                Contact
+              </Link>
+            </div>
+          </motion.div>
+        )}
+      </div>
+    </nav>
   );
 }
