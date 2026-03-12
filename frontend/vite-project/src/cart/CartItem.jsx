@@ -1,13 +1,13 @@
 import { useCart } from "../context/CartContext";
+import { Trash2, Plus, Minus } from "lucide-react";
 
 export default function CartItem({ item }) {
   const { updateQty, removeFromCart } = useCart();
   const realId = item._id || item.id;
-  const price = Number(item.price); // string guard
+  const price = Number(item.price);
 
   const handleDecrease = () => {
     if (item.qty <= 1) {
-      // qty 1 se kam nahi — remove karo
       removeFromCart(realId);
     } else {
       updateQty(realId, item.qty - 1);
@@ -19,66 +19,67 @@ export default function CartItem({ item }) {
   };
 
   return (
-    <div className="flex gap-4 border-b py-4">
-
-      {/* IMAGE */}
-      <div className="w-24 h-24 md:w-32 md:h-32 flex-shrink-0">
+    <div className="flex gap-4 p-6">
+      {/* Image */}
+      <div className="w-24 h-24 md:w-28 md:h-28 flex-shrink-0 bg-[hsl(45,20%,93%)] rounded-xl overflow-hidden">
         <img
           src={item.images?.[0]?.url || item.image}
           alt={item.name}
-          className="w-full h-full object-cover rounded-xl"
+          className="w-full h-full object-cover"
         />
       </div>
 
-      {/* CONTENT */}
-      <div className="flex-1 flex flex-col justify-between">
-
-        {/* Name + price */}
+      {/* Content */}
+      <div className="flex-1 flex flex-col justify-between min-w-0">
         <div>
-          <p className="font-semibold text-lg">{item.name}</p>
-          <p className="text-green-600 font-bold">
-            ₹{price.toLocaleString("en-IN")}
+          <h3 className="font-medium text-[hsl(20,15%,10%)] truncate pr-4">
+            {item.name}
+          </h3>
+          <p className="text-[hsl(12,76%,55%)] font-semibold mt-1">
+            Rs. {price.toLocaleString("en-IN")}
           </p>
-          <p className="text-sm text-gray-500 mt-1">
-            {item.description || item.shortDescription || ""}
-          </p>
+          {(item.description || item.shortDescription) && (
+            <p className="text-sm text-[hsl(20,10%,40%)] mt-1 line-clamp-1">
+              {item.description || item.shortDescription}
+            </p>
+          )}
         </div>
 
-        {/* Qty controls + total + remove */}
-        <div className="flex items-center justify-between mt-3">
-
-          {/* Quantity controls */}
-          <div className="flex items-center gap-2">
+        <div className="flex items-center justify-between mt-4">
+          {/* Quantity Controls */}
+          <div className="flex items-center gap-1">
             <button
               onClick={handleDecrease}
-              className="w-8 h-8 flex items-center justify-center border rounded-lg hover:bg-gray-100 font-bold text-gray-700"
+              className="w-8 h-8 flex items-center justify-center rounded-lg border border-[hsl(20,10%,88%)] hover:bg-[hsl(45,20%,93%)] transition-colors"
             >
-              −
+              <Minus className="w-4 h-4 text-[hsl(20,10%,40%)]" />
             </button>
 
-            <span className="font-semibold w-6 text-center">{item.qty}</span>
+            <span className="w-10 text-center font-medium text-[hsl(20,15%,10%)]">
+              {item.qty}
+            </span>
 
             <button
               onClick={handleIncrease}
-              className="w-8 h-8 flex items-center justify-center border rounded-lg hover:bg-gray-100 font-bold text-gray-700"
+              className="w-8 h-8 flex items-center justify-center rounded-lg border border-[hsl(20,10%,88%)] hover:bg-[hsl(45,20%,93%)] transition-colors"
             >
-              +
+              <Plus className="w-4 h-4 text-[hsl(20,10%,40%)]" />
             </button>
           </div>
 
-          {/* Subtotal + Remove */}
-          <div className="text-right">
-            <p className="font-bold">
-              ₹{(price * item.qty).toLocaleString("en-IN")}
+          {/* Subtotal & Remove */}
+          <div className="flex items-center gap-4">
+            <p className="font-semibold text-[hsl(20,15%,10%)]">
+              Rs. {(price * item.qty).toLocaleString("en-IN")}
             </p>
             <button
               onClick={() => removeFromCart(realId)}
-              className="text-red-500 text-sm hover:underline mt-1"
+              className="p-2 text-[hsl(20,10%,40%)] hover:text-red-500 hover:bg-red-50 rounded-lg transition-all"
+              title="Remove item"
             >
-              Remove
+              <Trash2 className="w-4 h-4" />
             </button>
           </div>
-
         </div>
       </div>
     </div>
