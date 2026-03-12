@@ -1,11 +1,13 @@
 import { useEffect, useState } from "react";
 import axios from "axios";
 import { motion } from "framer-motion";
+import { useNavigate } from "react-router-dom";
 
 export default function Myorders() {
 
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
 
   /* ================= FETCH ================= */
@@ -242,6 +244,7 @@ export default function Myorders() {
               <motion.button
                 whileHover={{ scale: 1.05 }}
                 whileTap={{ scale: 0.95 }}
+                onClick={() => navigate(`/orders/${o._id}`)}
                 className="
                   w-full bg-gradient-to-r
                   from-indigo-600 to-purple-600
