@@ -1,3 +1,120 @@
 @import 'tailwindcss/base';
 @import 'tailwindcss/components';
 @import 'tailwindcss/utilities';
+
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:wght@400;500;600;700;800&display=swap');
+
+:root {
+  /* Primary - Warm Beige/Cream */
+  --background: 45 30% 97%;
+  --foreground: 20 15% 10%;
+
+  /* Card surfaces */
+  --card: 0 0% 100%;
+  --card-foreground: 20 15% 10%;
+
+  /* Muted backgrounds */
+  --muted: 45 20% 93%;
+  --muted-foreground: 20 10% 40%;
+
+  /* Primary accent - Coral/Terracotta */
+  --primary: 12 76% 55%;
+  --primary-foreground: 0 0% 100%;
+
+  /* Secondary - Deep Charcoal */
+  --secondary: 20 10% 15%;
+  --secondary-foreground: 45 30% 97%;
+
+  /* Accent - Soft Rose */
+  --accent: 12 40% 92%;
+  --accent-foreground: 12 76% 40%;
+
+  /* Destructive */
+  --destructive: 0 84% 60%;
+  --destructive-foreground: 0 0% 100%;
+
+  /* Border */
+  --border: 20 10% 88%;
+
+  /* Input */
+  --input: 20 10% 88%;
+
+  /* Ring */
+  --ring: 12 76% 55%;
+
+  /* Radius */
+  --radius: 0.75rem;
+}
+
+* {
+  box-sizing: border-box;
+  margin: 0;
+  padding: 0;
+}
+
+html {
+  scroll-behavior: smooth;
+}
+
+body {
+  font-family: 'Inter', system-ui, -apple-system, sans-serif;
+  background-color: hsl(var(--background));
+  color: hsl(var(--foreground));
+  line-height: 1.6;
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+h1, h2, h3, h4, h5, h6 {
+  font-family: 'Playfair Display', serif;
+  font-weight: 600;
+  line-height: 1.2;
+}
+
+/* Custom scrollbar */
+::-webkit-scrollbar {
+  width: 8px;
+}
+
+::-webkit-scrollbar-track {
+  background: hsl(var(--muted));
+}
+
+::-webkit-scrollbar-thumb {
+  background: hsl(var(--border));
+  border-radius: 4px;
+}
+
+::-webkit-scrollbar-thumb:hover {
+  background: hsl(var(--muted-foreground));
+}
+
+/* Selection */
+::selection {
+  background-color: hsl(var(--primary) / 0.2);
+  color: hsl(var(--foreground));
+}
+
+/* Focus styles */
+*:focus-visible {
+  outline: 2px solid hsl(var(--ring));
+  outline-offset: 2px;
+}
+
+/* Smooth image loading */
+img {
+  max-width: 100%;
+  height: auto;
+}
+
+/* Link styles */
+a {
+  color: inherit;
+  text-decoration: none;
+}
+
+/* Button reset */
+button {
+  cursor: pointer;
+  font-family: inherit;
+}
