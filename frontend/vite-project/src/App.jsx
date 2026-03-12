@@ -74,7 +74,7 @@ const router = createBrowserRouter([
         element:<><OrderSuccess/></>
     }, 
     {
-        path:'/order/:id',
+        path:'/orders/:id',
         element:<><ComplexNavbar/><OrderDetail/><Footer/></>
     }, 
 
