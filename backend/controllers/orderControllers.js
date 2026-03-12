@@ -12,11 +12,7 @@ export const newOrder = catchAsyncError(async (req, res, next) => {
     orderItems,
     shippingInfo,
   } = req.body;
-  const itemsPrice = orderItems.reduce((acc,item)=>acc+item.price *item.quantity,
-                                      0
-                
-    
-  )
+  const itemsPrice = orderItems.reduce((acc, item) => acc + item.price * item.quantity, 0)
   const taxPrice =0
   const shippingPrice =0
   const totalPrice = itemsPrice + taxPrice + shippingPrice;
@@ -37,7 +33,7 @@ export const newOrder = catchAsyncError(async (req, res, next) => {
   await User.findByIdAndUpdate(req.user.id, {
     $push: { orders: order._id },
   });
-  res.status(200).json({ success: true, message: order });
+  res.status(200).json({ success: true, order });
 });
 //Get logged in Users orders /api/v1/orders/me
 export const myOrders = catchAsyncError(async (req, res, next) => {
@@ -133,4 +129,3 @@ export const deleteOrder = catchAsyncError(async (req, res, next) => {
     .status(200)
     .json({ success: true, message: "Order deleted successfully" });
 });
-
