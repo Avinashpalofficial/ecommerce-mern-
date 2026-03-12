@@ -52,7 +52,7 @@ export default function Cart() {
               Looks like you {"haven't"} added anything to your cart yet
             </p>
             <button
-              onClick={() => navigate("/products")}
+              onClick={() => navigate("/allproduct")}
               className="inline-flex items-center gap-2 bg-[hsl(20,10%,15%)] hover:bg-[hsl(20,10%,20%)] text-white px-8 py-3 rounded-lg font-medium transition-all"
             >
               Start Shopping
