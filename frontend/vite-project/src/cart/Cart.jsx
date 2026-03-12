@@ -1,8 +1,16 @@
 import CartItem from "./CartItem";
 import { useCart } from "../context/CartContext";
+import { useNavigate } from "react-router-dom";
 
 export default function Cart() {
   const { cartItem } = useCart();
+  const navigate = useNavigate();
+
+  // Number() lagaya — price string aaye toh bhi NaN nahi aayega
+  const totalPrice = cartItem.reduce(
+    (sum, item) => sum + Number(item.price) * item.qty,
+    0
+  );
 
   return (
     <div className="min-h-screen bg-gray-100 py-8 px-4">
@@ -28,7 +36,7 @@ export default function Cart() {
             </div>
           ) : (
             cartItem.map((item) => (
-              <CartItem key={item.id} item={item} />
+              <CartItem key={item._id || item.id} item={item} />
             ))
           )}
         </div>
@@ -38,14 +46,8 @@ export default function Cart() {
           <h2 className="text-lg font-semibold mb-4">Order Summary</h2>
 
           <div className="flex justify-between text-sm mb-2">
-            <span>Items ({cartItem.length})</span>
-            <span>
-              ₹
-              {cartItem.reduce(
-                (sum, item) => sum + item.price * item.quantity,
-                0
-              )}
-            </span>
+            <span>Items ({cartItem.reduce((s, i) => s + i.qty, 0)})</span>
+            <span>₹{totalPrice.toLocaleString("en-IN")}</span>
           </div>
 
           <div className="flex justify-between text-sm mb-2">
@@ -57,18 +59,14 @@ export default function Cart() {
 
           <div className="flex justify-between font-semibold text-lg">
             <span>Total</span>
-            <span>
-              ₹
-              {cartItem.reduce(
-                (sum, item) => sum + item.price * item.quantity,
-                0
-              )}
-            </span>
+            <span>₹{totalPrice.toLocaleString("en-IN")}</span>
           </div>
 
+          {/* Checkout button — navigate to /address */}
           <button
             disabled={cartItem.length === 0}
-            className="w-full mt-5 bg-yellow-400 hover:bg-yellow-500 disabled:bg-gray-300 text-black font-semibold py-2 rounded-full transition"
+            onClick={() => navigate("/address")}
+            className="w-full mt-5 bg-yellow-400 hover:bg-yellow-500 disabled:bg-gray-300 disabled:cursor-not-allowed text-black font-semibold py-3 rounded-full transition"
           >
             Proceed to Checkout
           </button>
