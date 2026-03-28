@@ -29,34 +29,38 @@ cloudinary.config({
 });
 
 // ✅ CORS — local + production dono handle hoga
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  process.env.CLIENT_URL,
-  process.env.ADMIN_URL,
-];
+// const allowedOrigins = [
+//   "http://localhost:5173",
+//   "http://localhost:5174",
+//   process.env.CLIENT_URL,
+//   process.env.ADMIN_URL,
+// ];
 
 
+// app.use(cors({
+//   origin: (origin, callback) => {
+//     // allow requests with no origin (mobile apps, postman)
+//     if (!origin) return callback(null, true);
+
+//     try {
+//       const isVercel = origin.includes(".vercel.app");
+
+//       if (isVercel) {
+//         return callback(null, true);
+//       }
+
+//       return callback(null, false); // block silently
+//     } catch (err) {
+//       return callback(null, false);
+//     }
+//   },
+//   credentials: true,
+// }));
 app.use(cors({
-  origin: (origin, callback) => {
-    // allow requests with no origin (mobile apps, postman)
-    if (!origin) return callback(null, true);
-
-    try {
-      const isVercel = origin.includes(".vercel.app");
-
-      if (isVercel) {
-        return callback(null, true);
-      }
-
-      return callback(null, false); // block silently
-    } catch (err) {
-      return callback(null, false);
-    }
-  },
-  credentials: true,
+  origin: "*"
 }));
 
+// IMPORTANT: preflight handle
 
 
 
