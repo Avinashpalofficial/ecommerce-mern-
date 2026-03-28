@@ -36,7 +36,6 @@ const allowedOrigins = [
   process.env.ADMIN_URL,
 ];
 
-import cors from "cors";
 
 app.use(cors({
   origin: (origin, callback) => {
