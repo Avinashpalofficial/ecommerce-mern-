@@ -1,91 +1,79 @@
 import express from "express";
 import dotenv from "dotenv";
+import cors from "cors";
+import cookieParser from "cookie-parser";
+
+// Routes & Config
 import connectDB from "./config/db.js";
 import authRouter from "./routes/authRoutes.js";
 import productRouter from "./routes/productRoutes.js";
-import cookieParser from "cookie-parser";
-import errorMiddleware from "./middleware/error.js";
 import OrderRouter from "./routes/orderRoutes.js";
 import paymentRouter from "./routes/paymentRoutes.js";
-import { upload } from "./config/cloudinary.js";
-import cloudinary from "./config/cloudinary.js";
-import { stripeWebhook } from "./controllers/paymentControllers.js";
 import { DashboardRouter } from "./routes/dashboardRoute.js";
-import cors from "cors";
+import { stripeWebhook } from "./controllers/paymentControllers.js";
+import errorMiddleware from "./middleware/error.js";
+import cloudinary from "./config/cloudinary.js";
 
-// load environment variables
+// Load env
 dotenv.config();
 
-// connect to mongoDB
-connectDB();
-
+// Init app
 const app = express();
+
+// ✅ Connect DB safely
+connectDB().catch((err) => {
+  console.error("❌ DB Connection Error:", err);
+});
+
+// ✅ Cookie parser
 app.use(cookieParser());
 
+// ✅ Cloudinary config
 cloudinary.config({
   cloud_name: process.env.CLOUDINARY_CLOUD_NAME,
   api_key: process.env.CLOUDINARY_API_KEY,
   api_secret: process.env.CLOUDINARY_API_SECRET,
 });
 
-// ✅ CORS — local + production dono handle hoga
-const allowedOrigins = [
-  "http://localhost:5173",
-  "http://localhost:5174",
-  process.env.CLIENT_URL,
-  process.env.ADMIN_URL,
-];
+// ✅ SIMPLE + SAFE CORS (production ready)
+app.use(
+  cors({
+    origin: true, // allow all origins (safe for dev + vercel)
+    credentials: true,
+  })
+);
 
-
-app.use(cors({
-  origin: (origin, callback) => {
-    // allow requests with no origin (mobile apps, postman)
-    if (!origin) return callback(null, true);
-
-    try {
-      const isVercel = origin.includes(".vercel.app");
-
-      if (isVercel) {
-        return callback(null, true);
-      }
-
-      return callback(null, false); // block silently
-    } catch (err) {
-      return callback(null, false);
-    }
-  },
-  credentials: true,
-}));
-
-
-
-
-app.use(express.json());
-
-// ✅ PORT — Railway khud PORT set karta hai
-const PORT = process.env.PORT || 5000;
-
-// Routes
-app.use("/api/v1/auth", authRouter);
-app.use("/api/v1", productRouter);
-app.use("/api/v1", OrderRouter);
-app.use("/api/v1", paymentRouter);
-app.use("/api/v1", DashboardRouter);
-
-// Stripe webhook — express.raw() CORS ke baad, express.json() se pehle hona chahiye
+// ✅ STRIPE WEBHOOK (MUST be BEFORE express.json)
 app.post(
   "/api/v1/payment/webhook",
   express.raw({ type: "application/json" }),
   stripeWebhook
 );
 
-// Health check — Railway verify karta hai isse
+// ✅ JSON parser
+app.use(express.json());
+
+// ✅ Health check (VERY IMPORTANT for Railway)
 app.get("/api/health", (req, res) => {
-  res.json({ status: "ok", message: "Backend chal raha hai ✅" });
+  res.json({
+    success: true,
+    message: "Backend chal raha hai ✅",
+  });
 });
 
+// ✅ Routes
+app.use("/api/v1/auth", authRouter);
+app.use("/api/v1", productRouter);
+app.use("/api/v1", OrderRouter);
+app.use("/api/v1", paymentRouter);
+app.use("/api/v1", DashboardRouter);
+
+// ✅ Global error handler
 app.use(errorMiddleware);
 
+// ✅ PORT (Railway compatible)
+const PORT = process.env.PORT || 5000;
+
 app.listen(PORT, () => {
-  console.log(`Server is running on port ${PORT}`);
+  console.log(`🚀 Server running on port ${PORT}`);
 });
