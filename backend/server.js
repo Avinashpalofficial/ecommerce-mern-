@@ -36,26 +36,30 @@ const allowedOrigins = [
   process.env.ADMIN_URL,
 ];
 
-app.use(
-  cors({
-    origin: (origin, callback) => {
-      if (!origin) return callback(null, true);
-      
-      // Vercel ke saare subdomains allow karo
-      const isVercel = origin.endsWith(".vercel.app");
-      const isAllowed = allowedOrigins.includes(origin);
-      
-      if (isVercel || isAllowed) {
-        callback(null, true);
-      } else {
-        callback(new Error(`CORS blocked: ${origin}`));
+import cors from "cors";
+
+app.use(cors({
+  origin: (origin, callback) => {
+    // allow requests with no origin (mobile apps, postman)
+    if (!origin) return callback(null, true);
+
+    try {
+      const isVercel = origin.includes(".vercel.app");
+
+      if (isVercel) {
+        return callback(null, true);
       }
-    },
-    credentials: true,
-    methods: ["GET", "POST", "PUT", "DELETE", "OPTIONS"],
-    allowedHeaders: ["Content-Type", "Authorization"],
-  })
-);
+
+      return callback(null, false); // block silently
+    } catch (err) {
+      return callback(null, false);
+    }
+  },
+  credentials: true,
+}));
+
+// IMPORTANT: preflight handle
+app.options("*", cors());;
 
 
 app.use(express.json());
