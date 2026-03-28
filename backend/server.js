@@ -67,7 +67,8 @@ app.use(cors({
 app.use(express.json());
 
 // ✅ PORT — Railway khud PORT set karta hai
-const PORT = process.env.PORT || 5000;
+
+const PORT = process.env.PORT || 8080;
 
 // Routes
 app.use("/api/v1/auth", authRouter);
