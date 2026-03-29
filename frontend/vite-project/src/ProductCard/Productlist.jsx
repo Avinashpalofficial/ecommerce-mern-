@@ -29,9 +29,9 @@ export default function ProductList() {
   }
 
   // Filter and sort products
-  let filteredProducts = products.filter((p) =>
+  let filteredProducts = products?.filter((p) =>
     p.name.toLowerCase().includes(searchTerm.toLowerCase())
-  );
+  )||[];
 
   if (sortBy === "price-low") {
     filteredProducts = [...filteredProducts].sort((a, b) => a.price - b.price);
@@ -145,7 +145,7 @@ export default function ProductList() {
 
           {/* Product Count */}
           <div className="mt-4 text-sm text-muted-foreground">
-            Showing {filteredProducts.length} of {products.length} products
+            Showing {filteredProducts.length} of {products||[].length} products
           </div>
         </div>
       </section>
