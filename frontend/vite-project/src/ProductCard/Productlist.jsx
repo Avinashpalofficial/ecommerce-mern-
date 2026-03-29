@@ -12,21 +12,18 @@ export default function ProductList() {
   const [gridCols, setGridCols] = useState(4);
   const [showFilters, setShowFilters] = useState(false);
 
-  if (loading) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-      </div>
-    );
-  }
+  {loading && (
+  <div className="flex justify-center py-20">
+    <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+  </div>
+)}
 
-  if (error) {
-    return (
-      <div className="min-h-screen bg-background flex items-center justify-center">
-        <p className="text-destructive text-lg">{error}</p>
-      </div>
-    );
-  }
+{/* Error */}
+{error && (
+  <div className="text-center py-10">
+    <p className="text-destructive text-lg">{error}</p>
+  </div>
+)}
 
   // Filter and sort products
   let filteredProducts = products?.filter((p) =>
