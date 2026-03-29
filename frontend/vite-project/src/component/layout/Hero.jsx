@@ -4,7 +4,7 @@ import { useProducts } from "../../context/ProductContext";
 import { motion } from "framer-motion";
 import { ArrowRight, Star, Truck, Shield, RefreshCw, ArrowUpRight, Play, CheckCircle2 } from "lucide-react";
 
-const LandingPage = () => {
+const Hero = () => {
   const navigate = useNavigate();
   const { products, loading, error } = useProducts();
   
@@ -442,4 +442,4 @@ const LandingPage = () => {
   );
 };
 
-export default LandingPage;
+export default Hero;
