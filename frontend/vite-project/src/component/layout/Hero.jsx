@@ -7,6 +7,7 @@ import { ArrowRight, Star, Truck, Shield, RefreshCw, ArrowUpRight, Play, CheckCi
 const Hero = () => {
   const navigate = useNavigate();
   const { products, loading, error } = useProducts();
+  const featuredProducts = products?.slice(0, 8)||[];
   
   // Ref for smooth scrolling
   const productsRef = useRef(null);
@@ -32,24 +33,21 @@ const Hero = () => {
     show: { opacity: 1, y: 0, transition: { duration: 0.5 } },
   };
 
- {loading ? (
+  {/* Loader */}
+{loading && (
   <div className="flex justify-center py-20">
-    <div className="w-10 h-10 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+    <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
   </div>
-) : (
-  featuredProducts.map((item) => (
-    <div key={item._id}>{item.name}</div>
-  ))
+)}
+
+{/* Error */}
+{error && (
+  <div className="text-center py-10">
+    <p className="text-destructive text-lg">{error}</p>
+  </div>
 )}
 
   
-    {error && (
-  <div className="text-center py-10">
-    <p className="text-red-500">{error}</p>
-  </div>
-)}
-
-  const featuredProducts = products?.slice(0, 8)||[];
   const categories = [
     { name: "New Arrivals", image: "https://images.unsplash.com/photo-1441986300917-64674bd600d8?w=600", count: "120+ Items" },
     { name: "Best Sellers", image: "https://images.unsplash.com/photo-1472851294608-062f824d29cc?w=600", count: "80+ Items" },
