@@ -66,7 +66,13 @@ const API = import.meta.env.VITE_API_URL;
     setUser((p) => ({ ...p, [e.target.name]: e.target.value }));
 
   const handleAddToCart = () => {
-    addToCart({ ...product, qty });
+    addToCart({
+  _id: product._id,
+  name: product.name,
+  price: product.price,
+  image: product.images?.[0]?.url,
+  qty,
+});
   };
 
   const handlePayment = async () => {
