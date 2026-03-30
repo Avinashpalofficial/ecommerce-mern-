@@ -13,7 +13,7 @@ export default function Myorders() {
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        `${API}/api/v1/orders/me`,
+        `${API}/v1/orders/me`,
         { withCredentials: true }
       );
       setOrders(res.data.orders);

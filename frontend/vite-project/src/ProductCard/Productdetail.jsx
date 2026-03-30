@@ -79,7 +79,7 @@ const API = import.meta.env.VITE_API_URL;
       setLoadingPay(true);
 
       const order = await axios.post(
-        `${API}/api/v1/orders/new`,
+        `${API}/v1/orders/new`,
         {
           orderItems: [
             {

@@ -25,7 +25,7 @@ const API = import.meta.env.VITE_API_URL;
       setLoading(true);
 
       const res = await axios.put(
-        `${API}/api/v1/auth/user/update-name`,
+        `${API}/v1/auth/user/update-name`,
         { name },
         { withCredentials: true }
       );

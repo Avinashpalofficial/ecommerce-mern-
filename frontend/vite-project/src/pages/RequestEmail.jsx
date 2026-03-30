@@ -30,7 +30,7 @@ export default function RequestEmailChange() {
       setLoading(true);
 
       const res = await axios.post(
-        `${API}/api/v1/auth/email/change`,
+        `${API}/v1/auth/email/change`,
         { newEmail },
         { withCredentials: true }
       );

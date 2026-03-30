@@ -10,7 +10,7 @@ const API = import.meta.env.VITE_API_URL;
         const getUserProfile=  async()=>{
            
               try {
-                         const response =  await axios.get(`${API}/api/v1/auth/user/me`,
+                         const response =  await axios.get(`${API}/v1/auth/user/me`,
                           {withCredentials:true}
                          )
                            console.log("ME API:", response.data);

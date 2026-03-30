@@ -78,7 +78,7 @@ export default function AddressForm() {
       }));
 
       const { data } = await axios.post(
-        `${API}/api/v1/orders/new`,
+        `${API}/v1/orders/new`,
         { shippingInfo, orderItems },
         { withCredentials: true }
       );

@@ -21,7 +21,7 @@ const API = import.meta.env.VITE_API_URL;
     const poll = async () => {
       try {
         const res = await axios.get(
-          `${API}/api/v1/stripe/session/${sessionId}`,
+          `${API}/v1/stripe/session/${sessionId}`,
           { withCredentials: true }
         );
         setOrder(res.data.order);

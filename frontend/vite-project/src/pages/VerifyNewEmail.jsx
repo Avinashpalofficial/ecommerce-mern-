@@ -28,7 +28,7 @@ const API = import.meta.env.VITE_API_URL;
       setLoading(true);
 
       const res = await axios.post(
-        `${API}/api/v1/auth/email/verify-new`,
+        `${API}/v1/auth/email/verify-new`,
         { otp },
         { withCredentials: true }
       );

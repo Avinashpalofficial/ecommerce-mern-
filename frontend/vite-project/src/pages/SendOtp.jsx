@@ -22,7 +22,7 @@ export default function SendOtp() {
       setLoading(true);
 
       const res = await axios.post(
-        `${API}/api/v1/auth/email/send-otp`,
+        `${API}/v1/auth/email/send-otp`,
         { email }
       );
 

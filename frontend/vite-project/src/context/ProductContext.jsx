@@ -15,7 +15,7 @@ export function ProductProvider({children}){
           try {
              setLoading(true)
              setError(false)
-             const response = await axios.get(`${API}/api/v1/allProducts`)
+             const response = await axios.get(`${API}/v1/allProducts`)
              console.log("pro:",response);
              
              setProducts(response.data.products)

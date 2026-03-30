@@ -32,7 +32,7 @@ export default function OrderDetail() {
   useEffect(() => {
     const fetchOrder = async () => {
       try {
-        const { data } = await axios.get(`${API}/api/v1/orders/${id}`, {
+        const { data } = await axios.get(`${API}/v1/orders/${id}`, {
           withCredentials: true,
         });
         setOrder(data.order);
