@@ -34,18 +34,18 @@ const Hero = () => {
   };
 
   {/* Loader */}
-{loading && (
-  <div className="flex justify-center py-20">
-    <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
-  </div>
-)}
+// {loading && (
+//   <div className="flex justify-center py-20">
+//     <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+//   </div>
+// )}
 
-{/* Error */}
-{error && (
-  <div className="text-center py-10">
-    <p className="text-destructive text-lg">{error}</p>
-  </div>
-)}
+// {/* Error */}
+// {error && (
+//   <div className="text-center py-10">
+//     <p className="text-destructive text-lg">{error}</p>
+//   </div>
+// )}
 
   
   const categories = [
@@ -57,6 +57,19 @@ const Hero = () => {
   return (
     <main className="bg-background">
       {/* Hero Section */}
+       {loading && (
+      <div className="flex justify-center py-20">
+        <div className="w-12 h-12 border-4 border-primary border-t-transparent rounded-full animate-spin" />
+      </div>
+    )}
+
+    {/* Error */}
+    {error && (
+      <div className="text-center py-10">
+        <p className="text-destructive text-lg">{error}</p>
+      </div>
+    )}
+
       <section className="relative min-h-[95vh] flex items-center overflow-hidden">
         {/* Background Decorative Element */}
         <div className="absolute top-0 right-0 -translate-y-1/4 translate-x-1/4 w-[600px] h-[600px] bg-primary/5 rounded-full blur-3xl" />
