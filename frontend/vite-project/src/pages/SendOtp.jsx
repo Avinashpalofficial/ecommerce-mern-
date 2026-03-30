@@ -8,7 +8,7 @@ export default function SendOtp() {
   const navigate = useNavigate();
   const [email, setEmail] = useState("");
   const [loading, setLoading] = useState(false);
-
+   const API = import.meta.env.VITE_API_URL;
 
   const sendOtp = async () => {
 
@@ -22,7 +22,7 @@ export default function SendOtp() {
       setLoading(true);
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth/email/send-otp`,
+        `${API}/api/v1/auth/email/send-otp`,
         { email }
       );
 

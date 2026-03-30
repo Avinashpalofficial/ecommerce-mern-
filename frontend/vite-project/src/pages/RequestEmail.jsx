@@ -8,7 +8,7 @@ export default function RequestEmailChange() {
 
   const [newEmail, setNewEmail] = useState("");
   const [loading, setLoading] = useState(false);
-
+  const API = import.meta.env.VITE_API_URL;
   const navigate = useNavigate();
 
 
@@ -30,7 +30,7 @@ export default function RequestEmailChange() {
       setLoading(true);
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth/email/change`,
+        `${API}/api/v1/auth/email/change`,
         { newEmail },
         { withCredentials: true }
       );

@@ -14,7 +14,7 @@ export default function VerifyNewEmail() {
 
   const navigate = useNavigate();
   const { updateUser } = useAuth();
-
+const API = import.meta.env.VITE_API_URL;
 
   const verify = async () => {
 
@@ -28,7 +28,7 @@ export default function VerifyNewEmail() {
       setLoading(true);
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth/email/verify-new`,
+        `${API}/api/v1/auth/email/verify-new`,
         { otp },
         { withCredentials: true }
       );

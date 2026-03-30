@@ -12,7 +12,7 @@ export default function UpdateName() {
   const [name, setName] = useState("");
   const [loading, setLoading] = useState(false);
 
-
+const API = import.meta.env.VITE_API_URL;
   const submitHandler = async () => {
 
     if (!name.trim()) {
@@ -25,7 +25,7 @@ export default function UpdateName() {
       setLoading(true);
 
       const res = await axios.put(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth/user/update-name`,
+        `${API}/api/v1/auth/user/update-name`,
         { name },
         { withCredentials: true }
       );

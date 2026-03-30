@@ -7,7 +7,7 @@ import { FiUser, FiMail, FiLock } from "react-icons/fi";
 const Signup = () => {
   const [loading, setLoading] = useState(false);
   const navigate = useNavigate();
-
+  const API = import.meta.env.VITE_API_URL;
   const [formData, setFormData] = useState({
     username: "",
     firstName: "",
@@ -29,7 +29,7 @@ const Signup = () => {
 
     try {
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth/user/register`,
+        `${API}/api/v1/auth/user/register`,
         formData
       );
 

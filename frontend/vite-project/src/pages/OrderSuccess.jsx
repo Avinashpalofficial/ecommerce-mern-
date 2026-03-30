@@ -11,7 +11,7 @@ export default function OrderSuccess() {
   const [countdown, setCountdown] = useState(5);
   const location = useLocation();
   const navigate = useNavigate();
-
+const API = import.meta.env.VITE_API_URL;
   useEffect(() => {
     const sessionId = new URLSearchParams(location.search).get("session_id");
     if (!sessionId) return;
@@ -21,7 +21,7 @@ export default function OrderSuccess() {
     const poll = async () => {
       try {
         const res = await axios.get(
-          `${import.meta.env.VITE_API_URL}/api/v1/stripe/session/${sessionId}`,
+          `${API}/api/v1/stripe/session/${sessionId}`,
           { withCredentials: true }
         );
         setOrder(res.data.order);

@@ -12,7 +12,7 @@ export default function VerifyOldEmail() {
   const [loading, setLoading] = useState(false);
 
   const navigate = useNavigate();
-
+const API = import.meta.env.VITE_API_URL;
 
   const verify = async () => {
 
@@ -26,7 +26,7 @@ export default function VerifyOldEmail() {
       setLoading(true);
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth/email/verify-old`,
+        `${API}/api/v1/auth/email/verify-old`,
         { otp },
         { withCredentials: true }
       );

@@ -9,11 +9,11 @@ export default function Myorders() {
   const [orders, setOrders] = useState([]);
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
-
+  const API = import.meta.env.VITE_API_URL;
   const fetchOrders = async () => {
     try {
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v1/orders/me`,
+        `${API}/api/v1/orders/me`,
         { withCredentials: true }
       );
       setOrders(res.data.orders);

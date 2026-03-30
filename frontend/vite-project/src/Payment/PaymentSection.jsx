@@ -9,7 +9,7 @@ import { CreditCard, ShieldCheck, Truck } from "lucide-react";
 export default function PaymentSection() {
 
   const { orderId } = useParams();
-
+  const API = import.meta.env.VITE_API_URL;
   const [order, setOrder] = useState(null);
   const [loading, setLoading] = useState(true);
 
@@ -23,7 +23,7 @@ export default function PaymentSection() {
     try {
 
       const res = await axios.get(
-        `${import.meta.env.VITE_API_URL}/api/v1/orders/${orderId}`,
+        `${API}/api/v1/orders/${orderId}`,
         { withCredentials: true }
       );
 
@@ -52,7 +52,7 @@ export default function PaymentSection() {
     try {
 
       const { data } = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/create-checkout-session`,
+        `${API}/api/v1/create-checkout-session`,
         { orderId },
         {
           headers: {

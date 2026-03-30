@@ -13,7 +13,7 @@ export default function ProductDetail() {
 
   const { products, loading } = useProducts();
   const { addToCart } = useCart();
-
+const API = import.meta.env.VITE_API_URL;
   const product = products.find(
     (p) => p._id === id || p.id?.toString() === id
   );
@@ -79,7 +79,7 @@ export default function ProductDetail() {
       setLoadingPay(true);
 
       const order = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/orders/new`,
+        `${API}/api/v1/orders/new`,
         {
           orderItems: [
             {

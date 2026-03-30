@@ -7,7 +7,7 @@ export default function VerifyOtp() {
 
   const location = useLocation();
   const navigate = useNavigate();
-
+const API = import.meta.env.VITE_API_URL;
   const [email] = useState(location.state?.email || "");
   const [otp, setOtp] = useState("");
   const [loading, setLoading] = useState(false);
@@ -25,7 +25,7 @@ export default function VerifyOtp() {
       setLoading(true);
 
       const res = await axios.post(
-        `${import.meta.env.VITE_API_URL}/api/v1/auth/email/verify-otp`,
+        `${API}/api/v1/auth/email/verify-otp`,
         { email, otp }
       );
 

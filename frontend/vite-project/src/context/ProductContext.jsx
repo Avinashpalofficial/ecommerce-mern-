@@ -6,7 +6,7 @@ export function ProductProvider({children}){
           const [products, setProducts] = useState([])
           const [loading,setLoading] = useState(false)
           const [error,setError] =  useState(null)
-
+          const API = import.meta.env.VITE_API_URL;
       //filters
       const [category, setCategory] = useState('all')   
      
@@ -15,7 +15,7 @@ export function ProductProvider({children}){
           try {
              setLoading(true)
              setError(false)
-             const response = await axios.get(`${import.meta.env.VITE_API_URL}/api/v1/allProducts`)
+             const response = await axios.get(`${API}/api/v1/allProducts`)
              console.log("pro:",response);
              
              setProducts(response.data.products)
