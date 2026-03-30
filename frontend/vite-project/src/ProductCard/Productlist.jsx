@@ -142,7 +142,7 @@ export default function ProductList() {
 
           {/* Product Count */}
           <div className="mt-4 text-sm text-muted-foreground">
-            Showing {filteredProducts.length} of {products||[].length} products
+            Showing {filteredProducts.length} of {(products||[]).length} products
           </div>
         </div>
       </section>
